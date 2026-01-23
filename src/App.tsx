@@ -14,6 +14,8 @@ import Dashboard from "./pages/Dashboard";
 import RecoverPassword from "./pages/RecoverPassword";
 import AccessDenied from "./pages/AccessDenied";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
+import AdminRoute from "./components/AdminRoute";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +52,11 @@ const App = () => (
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <AdminRoute>
+                <Admin />
+              </AdminRoute>
             } />
             
             <Route path="*" element={<NotFound />} />
