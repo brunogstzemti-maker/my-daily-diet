@@ -5,7 +5,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Salad, Mail, Lock, User } from 'lucide-react';
+import { Loader2, Salad, Mail, Lock, User, CheckCircle2, XCircle } from 'lucide-react';
+
+const validatePassword = (password: string) => {
+  return {
+    minLength: password.length >= 8,
+    hasUppercase: /[A-Z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+  };
+};
+
+const isPasswordValid = (password: string) => {
+  const validation = validatePassword(password);
+  return validation.minLength && validation.hasUppercase && validation.hasNumber && validation.hasSymbol;
+};
 
 export default function Login() {
   const navigate = useNavigate();
@@ -19,6 +33,8 @@ export default function Login() {
     email: '',
     password: '',
   });
+  
+  const passwordValidation = validatePassword(formData.password);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -29,6 +45,16 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isFirstAccess && !isPasswordValid(formData.password)) {
+      toast({ 
+        variant: "destructive", 
+        title: "Senha fraca", 
+        description: "Sua senha deve ter no mínimo 8 caracteres, letra maiúscula, número e símbolo." 
+      });
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -115,9 +141,18 @@ export default function Login() {
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   className="pl-10"
                   required
-                  minLength={6}
+                  minLength={isFirstAccess ? 8 : 6}
                 />
               </div>
+              
+              {isFirstAccess && formData.password && (
+                <div className="mt-3 space-y-1.5 text-sm">
+                  <PasswordRequirement met={passwordValidation.minLength} text="Mínimo 8 caracteres" />
+                  <PasswordRequirement met={passwordValidation.hasUppercase} text="Letra maiúscula" />
+                  <PasswordRequirement met={passwordValidation.hasNumber} text="Número" />
+                  <PasswordRequirement met={passwordValidation.hasSymbol} text="Símbolo (!@#$%...)" />
+                </div>
+              )}
             </div>
 
             <Button type="submit" variant="hero" className="w-full" disabled={loading}>
@@ -143,6 +178,15 @@ export default function Login() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function PasswordRequirement({ met, text }: { met: boolean; text: string }) {
+  return (
+    <div className={`flex items-center gap-2 ${met ? 'text-green-600' : 'text-muted-foreground'}`}>
+      {met ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+      <span>{text}</span>
     </div>
   );
 }
