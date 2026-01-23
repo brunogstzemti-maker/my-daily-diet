@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Salad, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { Salad, ArrowRight, CheckCircle2, Sparkles, LogOut } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const features = [
   'Dieta personalizada para seu corpo',
@@ -10,6 +11,8 @@ const features = [
 ];
 
 export default function Landing() {
+  const { signOut } = useAuth();
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
@@ -61,9 +64,13 @@ export default function Landing() {
       <footer className="py-6 px-4 border-t border-border/50 bg-card/50">
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <p>© 2024 Dieta Específica Personalizada</p>
-          <Link to="/login" className="text-primary hover:underline font-medium">
-            Entrar na minha conta
-          </Link>
+          <button 
+            onClick={signOut} 
+            className="text-primary hover:underline font-medium inline-flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            Sair
+          </button>
         </div>
       </footer>
     </div>
