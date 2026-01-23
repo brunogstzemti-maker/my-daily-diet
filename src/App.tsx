@@ -12,6 +12,7 @@ import DietResult from "./pages/DietResult";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import RecoverPassword from "./pages/RecoverPassword";
+import ResetPassword from "./pages/ResetPassword";
 import AccessDenied from "./pages/AccessDenied";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
@@ -30,6 +31,7 @@ const App = () => (
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/recuperar-senha" element={<RecoverPassword />} />
+            <Route path="/nova-senha" element={<ResetPassword />} />
             <Route path="/acesso-negado" element={<AccessDenied />} />
             
             {/* Protected routes */}
