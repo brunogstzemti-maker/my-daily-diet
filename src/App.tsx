@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
@@ -25,17 +25,33 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/criar-dieta" element={<DietForm />} />
-            <Route path="/resultado" element={<DietResult />} />
+            {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/recuperar-senha" element={<RecoverPassword />} />
             <Route path="/acesso-negado" element={<AccessDenied />} />
+            
+            {/* Protected routes */}
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Landing />
+              </ProtectedRoute>
+            } />
+            <Route path="/criar-dieta" element={
+              <ProtectedRoute>
+                <DietForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/resultado" element={
+              <ProtectedRoute>
+                <DietResult />
+              </ProtectedRoute>
+            } />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             } />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,7 @@ import { Loader2, Salad, Mail, Lock, User } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   
   const [isFirstAccess, setIsFirstAccess] = useState(false);
@@ -19,6 +19,13 @@ export default function Login() {
     email: '',
     password: '',
   });
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate('/', { replace: true });
+    }
+  }, [authLoading, user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,14 +38,14 @@ export default function Login() {
           toast({ variant: "destructive", title: "Erro no cadastro", description: error.message });
         } else {
           toast({ title: "Conta criada!", description: "Bem-vindo ao Dieta Específica Personalizada." });
-          navigate('/dashboard');
+          navigate('/');
         }
       } else {
         const { error } = await signIn(formData.email, formData.password);
         if (error) {
           toast({ variant: "destructive", title: "Erro no login", description: error.message });
         } else {
-          navigate('/dashboard');
+          navigate('/');
         }
       }
     } finally {
