@@ -20,6 +20,21 @@ export default function ResetPassword() {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
+    // Helper to get type from URL (check both hash and query params)
+    const getTypeFromUrl = () => {
+      // Check hash fragment first
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      let type = hashParams.get('type');
+      
+      // Also check query params
+      if (!type) {
+        const queryParams = new URLSearchParams(window.location.search);
+        type = queryParams.get('type');
+      }
+      
+      return type;
+    };
+
     // Listen for auth state changes - Supabase automatically handles the recovery token
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth event:', event, session);
@@ -29,37 +44,42 @@ export default function ResetPassword() {
         setIsValidSession(true);
         setChecking(false);
       } else if (event === 'SIGNED_IN' && session) {
-        // Check if this is a recovery session by checking the URL
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const type = hashParams.get('type');
+        const type = getTypeFromUrl();
         if (type === 'recovery') {
+          setIsValidSession(true);
+        }
+        setChecking(false);
+      } else if (event === 'INITIAL_SESSION' && session) {
+        // Check if this is a recovery session
+        const type = getTypeFromUrl();
+        if (type === 'recovery') {
+          setIsValidSession(true);
+        } else if (session) {
+          // Allow password change for any logged in user
           setIsValidSession(true);
         }
         setChecking(false);
       }
     });
 
-    // Also check for existing session
+    // Also check for existing session after a delay
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
+      const type = getTypeFromUrl();
       
-      // Check URL for recovery token (hash fragment)
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const type = hashParams.get('type');
-      
-      if (session && type === 'recovery') {
+      if (session) {
+        // If there's an active session, allow password change
         setIsValidSession(true);
-      } else if (session) {
-        // If there's an active session but not from recovery, 
-        // still allow password change
-        setIsValidSession(true);
+      } else if (type === 'recovery') {
+        // Still checking - wait a bit more for the auth event
+        return;
       }
       
       setChecking(false);
     };
 
-    // Small delay to allow onAuthStateChange to fire first
-    const timer = setTimeout(checkSession, 500);
+    // Longer delay to allow onAuthStateChange to fire first
+    const timer = setTimeout(checkSession, 1000);
 
     return () => {
       subscription.unsubscribe();
