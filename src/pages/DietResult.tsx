@@ -20,13 +20,15 @@ import {
   Home,
   ArrowLeftRight,
   ShoppingCart,
-  Check
+  Check,
+  FileText
 } from 'lucide-react';
 import { DietPlan, UserData, formatMealsForDB } from '@/lib/diet-calculator';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import jsPDF from 'jspdf';
 
 const mealIcons: Record<string, React.ReactNode> = {
   'Café da Manhã': <Coffee className="w-5 h-5" />,
@@ -182,71 +184,79 @@ export default function DietResult() {
   };
 
   const handleDownloadPDF = () => {
-    // Create printable version
-    const printContent = document.getElementById('diet-content');
-    if (printContent) {
-      const printWindow = window.open('', '_blank');
-      if (printWindow) {
-        printWindow.document.write(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Minha Dieta Personalizada - ${userData.name}</title>
-            <style>
-              body { font-family: system-ui, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; }
-              h1 { color: #1a7a5e; margin-bottom: 24px; }
-              h2 { color: #333; margin-top: 32px; }
-              .stats { display: flex; gap: 24px; margin-bottom: 32px; padding: 16px; background: #f0fdf4; border-radius: 12px; }
-              .stat { text-align: center; }
-              .stat-value { font-size: 24px; font-weight: bold; color: #1a7a5e; }
-              .stat-label { font-size: 12px; color: #666; }
-              .meal { margin-bottom: 24px; padding: 16px; border: 1px solid #e5e5e5; border-radius: 12px; }
-              .meal h3 { margin: 0 0 12px 0; color: #1a7a5e; }
-              .food { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-              .food:last-child { border-bottom: none; }
-              .warning { margin-top: 40px; padding: 16px; background: #fff7ed; border-radius: 12px; font-size: 14px; color: #9a3412; }
-            </style>
-          </head>
-          <body>
-            <h1>🥗 Dieta Personalizada para ${userData.name}</h1>
-            
-            <div class="stats">
-              <div class="stat">
-                <div class="stat-value">${dietPlan.targetCalories}</div>
-                <div class="stat-label">Calorias/dia</div>
-              </div>
-              <div class="stat">
-                <div class="stat-value">${dietPlan.mealsPerDay}</div>
-                <div class="stat-label">Refeições</div>
-              </div>
-              <div class="stat">
-                <div class="stat-value">${dietPlan.dietFocus}</div>
-                <div class="stat-label">Foco</div>
-              </div>
-            </div>
-
-            ${Object.values(dietPlan.meals).map(meal => `
-              <div class="meal">
-                <h3>${meal.name} ${meal.time ? `(${meal.time})` : ''}</h3>
-                ${meal.foods.map(food => `
-                  <div class="food">
-                    <strong>${food.item}</strong> - ${food.portion}
-                    ${food.substitutes ? `<br><small style="color:#666">Substituições: ${food.substitutes.join(', ')}</small>` : ''}
-                  </div>
-                `).join('')}
-              </div>
-            `).join('')}
-
-            <div class="warning">
-              ⚠️ <strong>Aviso:</strong> Esta dieta é educativa e não substitui o acompanhamento de um nutricionista profissional.
-            </div>
-          </body>
-          </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    let y = 20;
+    
+    // Helper function to add text and handle page breaks
+    const addText = (text: string, fontSize: number = 12, isBold: boolean = false, color: [number, number, number] = [0, 0, 0]) => {
+      if (y > 270) {
+        pdf.addPage();
+        y = 20;
       }
+      pdf.setFontSize(fontSize);
+      pdf.setTextColor(...color);
+      pdf.setFont('helvetica', isBold ? 'bold' : 'normal');
+      pdf.text(text, margin, y);
+      y += fontSize * 0.5 + 2;
+    };
+    
+    // Title
+    addText('Dieta Personalizada', 22, true, [26, 122, 94]);
+    addText(`Preparada para: ${userData.name}`, 14, false, [100, 100, 100]);
+    y += 5;
+    
+    // Stats
+    addText('Resumo do Plano', 16, true);
+    addText(`• Calorias diárias: ${dietPlan.targetCalories} kcal`);
+    addText(`• Número de refeições: ${dietPlan.mealsPerDay}`);
+    addText(`• Foco da dieta: ${dietPlan.dietFocus}`);
+    addText(`• Taxa Metabólica (BMR): ${dietPlan.bmr} kcal`);
+    addText(`• Gasto Diário (TDEE): ${dietPlan.tdee} kcal`);
+    addText(`• Déficit calórico: ${dietPlan.tdee - dietPlan.targetCalories} kcal`);
+    y += 8;
+    
+    // Meals
+    addText('Plano Alimentar Diário', 16, true, [26, 122, 94]);
+    y += 3;
+    
+    Object.values(dietPlan.meals).forEach((meal) => {
+      if (y > 250) {
+        pdf.addPage();
+        y = 20;
+      }
+      
+      addText(`${meal.name}${meal.time ? ` (${meal.time})` : ''}`, 14, true);
+      
+      meal.foods.forEach((food) => {
+        addText(`  • ${food.item} - ${food.portion}`, 11);
+        if (food.substitutes && food.substitutes.length > 0) {
+          addText(`    Substituições: ${food.substitutes.join(', ')}`, 9, false, [120, 120, 120]);
+        }
+      });
+      y += 4;
+    });
+    
+    // Warning
+    if (y > 250) {
+      pdf.addPage();
+      y = 20;
     }
+    y += 10;
+    pdf.setFillColor(255, 247, 237);
+    pdf.rect(margin - 5, y - 5, pageWidth - margin * 2 + 10, 25, 'F');
+    addText('⚠️ Aviso Importante', 12, true, [154, 52, 18]);
+    addText('Esta dieta é educativa e não substitui o acompanhamento', 10, false, [154, 52, 18]);
+    addText('de um nutricionista profissional.', 10, false, [154, 52, 18]);
+    
+    // Save
+    pdf.save(`dieta-${userData.name.toLowerCase().replace(/\s+/g, '-')}.pdf`);
+    
+    toast({
+      title: "PDF gerado!",
+      description: "Sua dieta foi baixada com sucesso.",
+    });
   };
 
   return (
