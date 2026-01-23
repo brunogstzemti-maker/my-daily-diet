@@ -20,33 +20,51 @@ export default function ResetPassword() {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    // Check if we have a valid recovery session
+    // Listen for auth state changes - Supabase automatically handles the recovery token
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth event:', event, session);
+      
+      if (event === 'PASSWORD_RECOVERY') {
+        // User clicked the recovery link and session is established
+        setIsValidSession(true);
+        setChecking(false);
+      } else if (event === 'SIGNED_IN' && session) {
+        // Check if this is a recovery session by checking the URL
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const type = hashParams.get('type');
+        if (type === 'recovery') {
+          setIsValidSession(true);
+        }
+        setChecking(false);
+      }
+    });
+
+    // Also check for existing session
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
       // Check URL for recovery token (hash fragment)
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
       const type = hashParams.get('type');
       
-      if (type === 'recovery' && accessToken) {
-        // Set the session from the recovery token
-        const { error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: hashParams.get('refresh_token') || '',
-        });
-        
-        if (!error) {
-          setIsValidSession(true);
-        }
+      if (session && type === 'recovery') {
+        setIsValidSession(true);
       } else if (session) {
+        // If there's an active session but not from recovery, 
+        // still allow password change
         setIsValidSession(true);
       }
       
       setChecking(false);
     };
 
-    checkSession();
+    // Small delay to allow onAuthStateChange to fire first
+    const timer = setTimeout(checkSession, 500);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   const validatePassword = (pwd: string) => {
