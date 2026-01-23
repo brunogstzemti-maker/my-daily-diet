@@ -3,16 +3,47 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-webhook-secret",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface CheckoutPayload {
-  email: string;
-  name: string;
+// Appmax webhook payload structure (modelo padrão)
+interface AppmaxWebhookPayload {
+  // Customer data
+  customer_email?: string;
+  customer_name?: string;
+  customer_firstname?: string;
+  customer_lastname?: string;
+  customer_telephone?: string;
+  customer_cpf?: string;
+  
+  // Order data
+  order_id?: string;
+  order_status?: string;
+  order_total?: number;
+  
+  // Product data
+  product_sku?: string;
+  product_name?: string;
+  
+  // Transaction data
   transaction_id?: string;
-  product_id?: string;
-  status: "approved" | "pending" | "rejected";
-  webhook_secret?: string;
+  payment_method?: string;
+  
+  // Event type
+  event?: string;
+  
+  // Alternative format (some templates use nested structure)
+  customer?: {
+    email?: string;
+    name?: string;
+    firstname?: string;
+    lastname?: string;
+  };
+  order?: {
+    id?: string;
+    status?: string;
+    total?: number;
+  };
 }
 
 serve(async (req: Request): Promise<Response> => {
@@ -33,46 +64,83 @@ serve(async (req: Request): Promise<Response> => {
       },
     });
 
-    const payload: CheckoutPayload = await req.json();
+    const payload: AppmaxWebhookPayload = await req.json();
     
-    console.log("Webhook received:", { 
-      email: payload.email, 
-      name: payload.name, 
-      status: payload.status,
-      transaction_id: payload.transaction_id 
+    // Extract email and name from different possible payload formats
+    const email = payload.customer_email || payload.customer?.email;
+    const name = payload.customer_name || 
+                 payload.customer?.name || 
+                 `${payload.customer_firstname || payload.customer?.firstname || ''} ${payload.customer_lastname || payload.customer?.lastname || ''}`.trim();
+    
+    const orderId = payload.order_id || payload.order?.id;
+    const orderStatus = payload.order_status || payload.order?.status;
+    const event = payload.event;
+
+    console.log("Appmax Webhook received:", { 
+      email, 
+      name, 
+      orderId,
+      orderStatus,
+      event,
+      transactionId: payload.transaction_id 
     });
 
     // Validate required fields
-    if (!payload.email || !payload.name) {
+    if (!email) {
+      console.error("Email not found in payload:", payload);
       return new Response(
-        JSON.stringify({ error: "Email e nome são obrigatórios" }),
+        JSON.stringify({ error: "Email do cliente não encontrado no payload" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Only process approved payments
-    if (payload.status !== "approved") {
+    // List of approved status/events from Appmax
+    const approvedEvents = [
+      "OrderApproved",      // Pedido aprovado
+      "OrderIntegrated",    // Pedido integrado (última etapa)
+      "OrderPaid",          // Pedido pago
+      "PixPaid",            // Pix pago
+      "UpsellPaid",         // Upsell pago
+    ];
+
+    const approvedStatuses = [
+      "approved",
+      "aprovado", 
+      "integrated",
+      "integrado",
+      "paid",
+      "pago"
+    ];
+
+    const isApproved = approvedEvents.includes(event || "") || 
+                       approvedStatuses.includes((orderStatus || "").toLowerCase());
+
+    if (!isApproved) {
+      console.log("Order not approved yet:", { event, orderStatus });
       return new Response(
-        JSON.stringify({ message: "Pagamento não aprovado, usuário não criado" }),
+        JSON.stringify({ 
+          message: "Evento recebido, aguardando aprovação do pedido",
+          event,
+          orderStatus 
+        }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     // Check if user already exists
     const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find(u => u.email === payload.email);
+    const existingUser = existingUsers?.users?.find(u => u.email === email);
 
     let userId: string;
 
     if (existingUser) {
-      // User already exists, just update profile status
+      // User already exists, update profile status to active
       userId = existingUser.id;
       console.log("User already exists:", userId);
 
-      // Update profile status to active
       const { error: updateError } = await supabaseAdmin
         .from("profiles")
-        .update({ status: "ativo", name: payload.name })
+        .update({ status: "ativo", name: name || existingUser.user_metadata?.name })
         .eq("user_id", userId);
 
       if (updateError) {
@@ -80,15 +148,16 @@ serve(async (req: Request): Promise<Response> => {
       }
     } else {
       // Create new user in Supabase Auth (without password - user will set it on first login)
-      const tempPassword = crypto.randomUUID(); // Temporary password, user will reset
+      const tempPassword = crypto.randomUUID();
       
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-        email: payload.email,
+        email: email,
         password: tempPassword,
-        email_confirm: true, // Auto-confirm email
+        email_confirm: true,
         user_metadata: {
-          name: payload.name,
+          name: name,
           needs_password_reset: true,
+          appmax_order_id: orderId,
         },
       });
 
@@ -108,22 +177,24 @@ serve(async (req: Request): Promise<Response> => {
         .from("profiles")
         .insert({
           user_id: userId,
-          email: payload.email,
-          name: payload.name,
+          email: email,
+          name: name || "Cliente",
           status: "ativo",
         });
 
       if (profileError) {
         console.error("Error creating profile:", profileError);
-        // Don't fail the webhook, user was created
       }
     }
+
+    console.log("Appmax integration successful for:", email);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         message: "Usuário criado/atualizado com sucesso",
         user_id: userId,
+        order_id: orderId,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
