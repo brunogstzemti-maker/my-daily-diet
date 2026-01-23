@@ -16,7 +16,9 @@ import {
   Target,
   ChevronDown,
   ChevronUp,
-  Loader2
+  Loader2,
+  LogOut,
+  Home
 } from 'lucide-react';
 import { DietPlan, UserData, formatMealsForDB } from '@/lib/diet-calculator';
 import { useAuth } from '@/contexts/AuthContext';
@@ -107,7 +109,7 @@ function MealCard({ meal }: MealCardProps) {
 export default function DietResult() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
 
@@ -246,20 +248,46 @@ export default function DietResult() {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="max-w-3xl mx-auto" id="diet-content">
-        {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
-            <Salad className="w-8 h-8 text-primary" />
-          </div>
-          <h1 className="font-display text-3xl font-bold text-foreground mb-2">
-            Sua Dieta Personalizada
-          </h1>
-          <p className="text-muted-foreground">
-            Preparamos um plano especial para você, {userData.name}!
-          </p>
+    <div className="min-h-screen bg-background">
+      {/* Top Navigation */}
+      <header className="border-b border-border bg-card/80 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <Home className="w-4 h-4" />
+            <span className="text-sm">Início</span>
+          </Link>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <Link to="/dashboard" className="text-sm text-primary hover:underline">
+                Minhas dietas
+              </Link>
+              <Button variant="ghost" size="sm" onClick={signOut} className="gap-2">
+                <LogOut className="w-4 h-4" />
+                Sair
+              </Button>
+            </div>
+          ) : (
+            <Link to="/login">
+              <Button variant="ghost" size="sm">Entrar</Button>
+            </Link>
+          )}
         </div>
+      </header>
+
+      <div className="py-8 px-4">
+        <div className="max-w-3xl mx-auto" id="diet-content">
+          {/* Header */}
+          <div className="text-center mb-8 animate-fade-in">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
+              <Salad className="w-8 h-8 text-primary" />
+            </div>
+            <h1 className="font-display text-3xl font-bold text-foreground mb-2">
+              Sua Dieta Personalizada
+            </h1>
+            <p className="text-muted-foreground">
+              Preparamos um plano especial para você, {userData.name}!
+            </p>
+          </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-3 gap-4 mb-8">
@@ -355,6 +383,7 @@ export default function DietResult() {
               </>
             )}
           </Button>
+        </div>
         </div>
       </div>
     </div>
