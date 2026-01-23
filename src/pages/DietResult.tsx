@@ -302,21 +302,21 @@ export default function DietResult() {
           </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="card-elevated p-4 text-center animate-slide-up" style={{ animationDelay: '100ms' }}>
-            <Flame className="w-6 h-6 text-primary mx-auto mb-2" />
-            <p className="text-2xl font-bold text-foreground">{dietPlan.targetCalories}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
+          <div className="card-elevated p-3 sm:p-4 text-center animate-slide-up" style={{ animationDelay: '100ms' }}>
+            <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
+            <p className="text-xl sm:text-2xl font-bold text-foreground">{dietPlan.targetCalories}</p>
             <p className="text-xs text-muted-foreground">Calorias/dia</p>
           </div>
-          <div className="card-elevated p-4 text-center animate-slide-up" style={{ animationDelay: '200ms' }}>
-            <Clock className="w-6 h-6 text-primary mx-auto mb-2" />
-            <p className="text-2xl font-bold text-foreground">{dietPlan.mealsPerDay}</p>
+          <div className="card-elevated p-3 sm:p-4 text-center animate-slide-up" style={{ animationDelay: '200ms' }}>
+            <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
+            <p className="text-xl sm:text-2xl font-bold text-foreground">{dietPlan.mealsPerDay}</p>
             <p className="text-xs text-muted-foreground">Refeições</p>
           </div>
-          <div className="card-elevated p-4 text-center animate-slide-up" style={{ animationDelay: '300ms' }}>
-            <Target className="w-6 h-6 text-primary mx-auto mb-2" />
-            <p className="text-lg font-bold text-foreground">{dietPlan.dietFocus}</p>
-            <p className="text-xs text-muted-foreground">Foco</p>
+          <div className="card-elevated p-3 sm:p-4 text-center animate-slide-up col-span-2 sm:col-span-1" style={{ animationDelay: '300ms' }}>
+            <Target className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
+            <p className="text-sm sm:text-base font-bold text-foreground leading-tight">{dietPlan.dietFocus}</p>
+            <p className="text-xs text-muted-foreground mt-1">Foco</p>
           </div>
         </div>
 
