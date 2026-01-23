@@ -6,44 +6,37 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Appmax webhook payload structure (modelo padrão)
+// Appmax webhook payload structure (formato real da Appmax)
+interface AppmaxCustomer {
+  id?: number;
+  email?: string;
+  firstname?: string;
+  lastname?: string;
+  fullname?: string;
+  telephone?: string;
+  document_number?: string;
+}
+
+interface AppmaxData {
+  id?: number;
+  customer_id?: number;
+  status?: string;
+  total?: number;
+  customer?: AppmaxCustomer;
+}
+
 interface AppmaxWebhookPayload {
-  // Customer data
+  environment?: string;
+  event?: string;
+  data?: AppmaxData;
+  
+  // Fallback for flat structure
   customer_email?: string;
   customer_name?: string;
   customer_firstname?: string;
   customer_lastname?: string;
-  customer_telephone?: string;
-  customer_cpf?: string;
-  
-  // Order data
   order_id?: string;
   order_status?: string;
-  order_total?: number;
-  
-  // Product data
-  product_sku?: string;
-  product_name?: string;
-  
-  // Transaction data
-  transaction_id?: string;
-  payment_method?: string;
-  
-  // Event type
-  event?: string;
-  
-  // Alternative format (some templates use nested structure)
-  customer?: {
-    email?: string;
-    name?: string;
-    firstname?: string;
-    lastname?: string;
-  };
-  order?: {
-    id?: string;
-    status?: string;
-    total?: number;
-  };
 }
 
 serve(async (req: Request): Promise<Response> => {
@@ -66,14 +59,16 @@ serve(async (req: Request): Promise<Response> => {
 
     const payload: AppmaxWebhookPayload = await req.json();
     
-    // Extract email and name from different possible payload formats
-    const email = payload.customer_email || payload.customer?.email;
-    const name = payload.customer_name || 
-                 payload.customer?.name || 
-                 `${payload.customer_firstname || payload.customer?.firstname || ''} ${payload.customer_lastname || payload.customer?.lastname || ''}`.trim();
+    // Extract from nested data structure (real Appmax format) or flat structure
+    const email = payload.data?.customer?.email || payload.customer_email;
+    const name = payload.data?.customer?.fullname || 
+                 payload.data?.customer?.firstname && payload.data?.customer?.lastname 
+                   ? `${payload.data.customer.firstname} ${payload.data.customer.lastname}`.trim()
+                   : payload.customer_name || 
+                     `${payload.customer_firstname || ''} ${payload.customer_lastname || ''}`.trim();
     
-    const orderId = payload.order_id || payload.order?.id;
-    const orderStatus = payload.order_status || payload.order?.status;
+    const orderId = payload.data?.id?.toString() || payload.order_id;
+    const orderStatus = payload.data?.status || payload.order_status;
     const event = payload.event;
 
     console.log("Appmax Webhook received:", { 
@@ -82,7 +77,6 @@ serve(async (req: Request): Promise<Response> => {
       orderId,
       orderStatus,
       event,
-      transactionId: payload.transaction_id 
     });
 
     // Validate required fields
