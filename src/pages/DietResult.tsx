@@ -4,7 +4,6 @@ import {
   Salad, 
   Coffee, 
   Sun, 
-  Sunset, 
   Moon, 
   Apple,
   RefreshCw, 
@@ -18,7 +17,10 @@ import {
   ChevronUp,
   Loader2,
   LogOut,
-  Home
+  Home,
+  ArrowLeftRight,
+  ShoppingCart,
+  Check
 } from 'lucide-react';
 import { DietPlan, UserData, formatMealsForDB } from '@/lib/diet-calculator';
 import { useAuth } from '@/contexts/AuthContext';
@@ -352,8 +354,224 @@ export default function DietResult() {
           </div>
         </div>
 
+        {/* Substitution Guide */}
+        <div className="card-elevated p-6 mb-8 animate-fade-in" style={{ animationDelay: '1000ms' }}>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
+              <ArrowLeftRight className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="font-display text-xl font-semibold text-foreground">📖 Guia de Substituições</h2>
+              <p className="text-sm text-muted-foreground">Troque alimentos sem perder resultados</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-secondary/50">
+              <h4 className="font-semibold text-foreground mb-2">🥩 Proteínas</h4>
+              <p className="text-sm text-muted-foreground mb-2">Todas têm valor proteico similar (por 100g):</p>
+              <div className="flex flex-wrap gap-2">
+                {['Frango grelhado', 'Peixe assado', 'Carne magra', 'Ovos (2 unid.)', 'Tofu', 'Lentilha'].map((item) => (
+                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/50">
+              <h4 className="font-semibold text-foreground mb-2">🍚 Carboidratos</h4>
+              <p className="text-sm text-muted-foreground mb-2">Mesma porção de carboidratos complexos:</p>
+              <div className="flex flex-wrap gap-2">
+                {['Arroz integral', 'Batata doce', 'Quinoa', 'Macarrão integral', 'Pão integral', 'Aveia'].map((item) => (
+                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/50">
+              <h4 className="font-semibold text-foreground mb-2">🥬 Vegetais e Folhas</h4>
+              <p className="text-sm text-muted-foreground mb-2">Baixas calorias, pode variar à vontade:</p>
+              <div className="flex flex-wrap gap-2">
+                {['Alface', 'Rúcula', 'Espinafre', 'Brócolis', 'Couve', 'Agrião', 'Acelga'].map((item) => (
+                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/50">
+              <h4 className="font-semibold text-foreground mb-2">🍎 Frutas</h4>
+              <p className="text-sm text-muted-foreground mb-2">1 porção equivale a:</p>
+              <div className="flex flex-wrap gap-2">
+                {['1 maçã', '1 banana', '1 laranja', '1 fatia de melão', '10 morangos', '1 pera', '2 kiwis'].map((item) => (
+                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/50">
+              <h4 className="font-semibold text-foreground mb-2">🥛 Laticínios e Alternativas</h4>
+              <p className="text-sm text-muted-foreground mb-2">Opções com valor nutricional similar:</p>
+              <div className="flex flex-wrap gap-2">
+                {['Leite desnatado', 'Iogurte natural', 'Leite de amêndoas', 'Queijo cottage', 'Ricota', 'Leite de coco'].map((item) => (
+                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Shopping List */}
+        <div className="card-elevated p-6 mb-8 animate-fade-in" style={{ animationDelay: '1100ms' }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
+                <ShoppingCart className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="font-display text-xl font-semibold text-foreground">🛒 Lista de Compras</h2>
+                <p className="text-sm text-muted-foreground">Tudo que você precisa para a semana</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-secondary/30">
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥩</span>
+                Proteínas
+              </h4>
+              <ul className="space-y-2">
+                {[
+                  'Peito de frango (1kg)',
+                  'Ovos (2 dúzias)',
+                  'Peixe (filé de tilápia ou similar - 500g)',
+                  userData.restrictions.includes('vegetariano') ? 'Tofu (500g)' : 'Carne magra (patinho - 500g)',
+                  'Feijão (500g)',
+                  'Lentilha (500g)',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/30">
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🍚</span>
+                Carboidratos
+              </h4>
+              <ul className="space-y-2">
+                {[
+                  'Arroz integral (1kg)',
+                  userData.restrictions.includes('sem-gluten') ? 'Pão sem glúten (1 pacote)' : 'Pão integral (1 pacote)',
+                  'Batata doce (1kg)',
+                  userData.restrictions.includes('sem-gluten') ? 'Tapioca (500g)' : 'Aveia (500g)',
+                  'Macarrão integral (500g)',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/30">
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥬</span>
+                Vegetais e Folhas
+              </h4>
+              <ul className="space-y-2">
+                {[
+                  'Alface (2 unidades)',
+                  'Tomate (500g)',
+                  'Pepino (3 unidades)',
+                  'Brócolis (2 maços)',
+                  'Cenoura (500g)',
+                  'Abobrinha (3 unidades)',
+                  'Couve (1 maço)',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/30">
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🍎</span>
+                Frutas
+              </h4>
+              <ul className="space-y-2">
+                {[
+                  'Bananas (1 cacho)',
+                  'Maçãs (6 unidades)',
+                  'Laranja (6 unidades)',
+                  'Mamão (1 unidade)',
+                  'Limões (6 unidades)',
+                  'Morangos (1 bandeja)',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/30">
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥛</span>
+                Laticínios
+              </h4>
+              <ul className="space-y-2">
+                {(userData.restrictions.includes('sem-lactose') ? [
+                  'Leite de amêndoas (1L)',
+                  'Iogurte sem lactose (4 unidades)',
+                  'Queijo sem lactose (200g)',
+                ] : [
+                  'Leite desnatado (2L)',
+                  'Iogurte natural (4 unidades)',
+                  'Queijo branco (200g)',
+                  'Ricota (200g)',
+                ]).map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-xl bg-secondary/30">
+              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥜</span>
+                Outros
+              </h4>
+              <ul className="space-y-2">
+                {[
+                  'Azeite extra virgem (500ml)',
+                  'Castanhas/amêndoas (200g)',
+                  'Pasta de amendoim (200g)',
+                  'Chá verde (1 caixa)',
+                  'Temperos naturais (alho, cebola)',
+                  'Sal, pimenta, ervas',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
         {/* Warning */}
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/10 border border-warning/20 mb-8 animate-fade-in" style={{ animationDelay: '1000ms' }}>
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/10 border border-warning/20 mb-8 animate-fade-in" style={{ animationDelay: '1200ms' }}>
           <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
           <p className="text-sm text-warning-foreground">
             <strong>Aviso:</strong> Esta dieta é educativa e não substitui o acompanhamento de um nutricionista profissional. Consulte um especialista antes de iniciar qualquer programa alimentar.
