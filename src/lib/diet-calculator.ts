@@ -9,6 +9,7 @@ export interface UserData {
   goal: 'emagrecer-rapido' | 'secar-barriga' | 'perder-5kg' | 'manter-peso';
   activityLevel: 'sedentario' | 'leve' | 'moderado' | 'intenso';
   restrictions: string[];
+  favoriteFoods?: string[]; // New field for favorite foods
 }
 
 export interface Meal {
@@ -34,7 +35,52 @@ export interface DietPlan {
     afternoonSnack: Meal;
     dinner: Meal;
   };
+  favoriteFoods?: string[];
 }
+
+// Available foods for selection
+export const availableFoods = {
+  proteins: [
+    { id: 'frango', label: 'Frango' },
+    { id: 'peixe', label: 'Peixe' },
+    { id: 'carne-bovina', label: 'Carne bovina' },
+    { id: 'ovos', label: 'Ovos' },
+    { id: 'tofu', label: 'Tofu' },
+    { id: 'lentilha', label: 'Lentilha' },
+    { id: 'grao-de-bico', label: 'Grão-de-bico' },
+    { id: 'peru', label: 'Peru' },
+  ],
+  carbs: [
+    { id: 'arroz-integral', label: 'Arroz integral' },
+    { id: 'batata-doce', label: 'Batata doce' },
+    { id: 'pao-integral', label: 'Pão integral' },
+    { id: 'aveia', label: 'Aveia' },
+    { id: 'tapioca', label: 'Tapioca' },
+    { id: 'quinoa', label: 'Quinoa' },
+    { id: 'macarrao-integral', label: 'Macarrão integral' },
+    { id: 'cuscuz', label: 'Cuscuz' },
+  ],
+  vegetables: [
+    { id: 'brocolis', label: 'Brócolis' },
+    { id: 'espinafre', label: 'Espinafre' },
+    { id: 'cenoura', label: 'Cenoura' },
+    { id: 'abobrinha', label: 'Abobrinha' },
+    { id: 'tomate', label: 'Tomate' },
+    { id: 'pepino', label: 'Pepino' },
+    { id: 'couve', label: 'Couve' },
+    { id: 'alface', label: 'Alface' },
+  ],
+  fruits: [
+    { id: 'banana', label: 'Banana' },
+    { id: 'maca', label: 'Maçã' },
+    { id: 'laranja', label: 'Laranja' },
+    { id: 'morango', label: 'Morango' },
+    { id: 'mamao', label: 'Mamão' },
+    { id: 'abacate', label: 'Abacate' },
+    { id: 'melao', label: 'Melão' },
+    { id: 'uva', label: 'Uva' },
+  ],
+};
 
 // Calculate BMR using Mifflin-St Jeor equation
 export function calculateBMR(weight: number, height: number, age: number, sex: 'masculino' | 'feminino'): number {
@@ -106,6 +152,7 @@ export function generateDiet(userData: UserData): DietPlan {
     dietFocus,
     mealsPerDay: 5,
     meals,
+    favoriteFoods: userData.favoriteFoods,
   };
 }
 
