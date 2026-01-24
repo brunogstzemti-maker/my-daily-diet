@@ -124,6 +124,111 @@ export function getDietFocus(goal: string): string {
   return focuses[goal] || 'Equilibrada';
 }
 
+// Helper to check if user has a favorite food
+function hasFavorite(favorites: string[] | undefined, foodId: string): boolean {
+  return favorites?.includes(foodId) ?? false;
+}
+
+// Get preferred protein based on favorites
+function getPreferredProtein(favorites: string[] | undefined, vegetarian: boolean): string[] {
+  const allProteins = vegetarian
+    ? [
+        { id: 'ovos', option: '2 ovos mexidos' },
+        { id: 'tofu', option: '3 colheres de tofu mexido' },
+        { id: 'lentilha', option: '150g de lentilha' },
+        { id: 'grao-de-bico', option: '150g de grão-de-bico' },
+      ]
+    : [
+        { id: 'frango', option: '150g de frango grelhado' },
+        { id: 'peixe', option: '150g de peixe assado' },
+        { id: 'carne-bovina', option: '120g de carne magra' },
+        { id: 'ovos', option: '2 ovos mexidos' },
+        { id: 'peru', option: '2 fatias de peito de peru' },
+      ];
+
+  // Sort by favorites first
+  const sorted = allProteins.sort((a, b) => {
+    const aFav = hasFavorite(favorites, a.id) ? 0 : 1;
+    const bFav = hasFavorite(favorites, b.id) ? 0 : 1;
+    return aFav - bFav;
+  });
+
+  return sorted.map(p => p.option);
+}
+
+// Get preferred carbs based on favorites
+function getPreferredCarbs(favorites: string[] | undefined, noGluten: boolean): string[] {
+  const allCarbs = noGluten
+    ? [
+        { id: 'tapioca', option: '1 tapioca média' },
+        { id: 'batata-doce', option: '2 batatas doces médias' },
+        { id: 'arroz-integral', option: '4 colheres de arroz integral' },
+        { id: 'quinoa', option: '3 colheres de quinoa' },
+        { id: 'cuscuz', option: '3 colheres de cuscuz' },
+      ]
+    : [
+        { id: 'arroz-integral', option: '4 colheres de arroz integral' },
+        { id: 'pao-integral', option: '2 fatias de pão integral' },
+        { id: 'batata-doce', option: '2 batatas doces médias' },
+        { id: 'aveia', option: '3 colheres de aveia' },
+        { id: 'tapioca', option: '1 tapioca média' },
+        { id: 'macarrao-integral', option: '3 colheres de macarrão integral' },
+        { id: 'quinoa', option: '3 colheres de quinoa' },
+      ];
+
+  const sorted = allCarbs.sort((a, b) => {
+    const aFav = hasFavorite(favorites, a.id) ? 0 : 1;
+    const bFav = hasFavorite(favorites, b.id) ? 0 : 1;
+    return aFav - bFav;
+  });
+
+  return sorted.map(c => c.option);
+}
+
+// Get preferred fruits based on favorites
+function getPreferredFruits(favorites: string[] | undefined): string[] {
+  const allFruits = [
+    { id: 'banana', option: '1 banana média' },
+    { id: 'maca', option: '1 maçã média' },
+    { id: 'mamao', option: '1 fatia de mamão' },
+    { id: 'laranja', option: '1 laranja média' },
+    { id: 'morango', option: '10 morangos' },
+    { id: 'melao', option: '1 fatia de melão' },
+    { id: 'abacate', option: '½ abacate pequeno' },
+    { id: 'uva', option: '1 cacho pequeno de uvas' },
+  ];
+
+  const sorted = allFruits.sort((a, b) => {
+    const aFav = hasFavorite(favorites, a.id) ? 0 : 1;
+    const bFav = hasFavorite(favorites, b.id) ? 0 : 1;
+    return aFav - bFav;
+  });
+
+  return sorted.map(f => f.option);
+}
+
+// Get preferred vegetables based on favorites
+function getPreferredVegetables(favorites: string[] | undefined): string[] {
+  const allVeggies = [
+    { id: 'brocolis', option: 'brócolis refogado' },
+    { id: 'espinafre', option: 'espinafre refogado' },
+    { id: 'cenoura', option: 'cenoura cozida' },
+    { id: 'abobrinha', option: 'abobrinha grelhada' },
+    { id: 'couve', option: 'couve refogada' },
+    { id: 'alface', option: 'salada de alface' },
+    { id: 'tomate', option: 'tomate em salada' },
+    { id: 'pepino', option: 'pepino em salada' },
+  ];
+
+  const sorted = allVeggies.sort((a, b) => {
+    const aFav = hasFavorite(favorites, a.id) ? 0 : 1;
+    const bFav = hasFavorite(favorites, b.id) ? 0 : 1;
+    return aFav - bFav;
+  });
+
+  return sorted.map(v => v.option);
+}
+
 // Generate personalized diet based on user data
 export function generateDiet(userData: UserData): DietPlan {
   const bmr = calculateBMR(userData.weight, userData.height, userData.age, userData.sex);
@@ -135,14 +240,15 @@ export function generateDiet(userData: UserData): DietPlan {
   const hasGlutenRestriction = userData.restrictions.includes('sem-gluten');
   const isVegetarian = userData.restrictions.includes('vegetariano');
   const noSweets = userData.restrictions.includes('sem-doces');
+  const favorites = userData.favoriteFoods;
 
-  // Base meals adjusted for restrictions
+  // Base meals adjusted for restrictions and favorites
   const meals = {
-    breakfast: generateBreakfast(targetCalories, hasLactoseRestriction, hasGlutenRestriction, isVegetarian),
-    morningSnack: generateMorningSnack(targetCalories, hasLactoseRestriction, noSweets),
-    lunch: generateLunch(targetCalories, hasGlutenRestriction, isVegetarian),
-    afternoonSnack: generateAfternoonSnack(targetCalories, hasLactoseRestriction, noSweets),
-    dinner: generateDinner(targetCalories, hasGlutenRestriction, isVegetarian),
+    breakfast: generateBreakfast(targetCalories, hasLactoseRestriction, hasGlutenRestriction, isVegetarian, favorites),
+    morningSnack: generateMorningSnack(targetCalories, hasLactoseRestriction, noSweets, favorites),
+    lunch: generateLunch(targetCalories, hasGlutenRestriction, isVegetarian, favorites),
+    afternoonSnack: generateAfternoonSnack(targetCalories, hasLactoseRestriction, noSweets, favorites),
+    dinner: generateDinner(targetCalories, hasGlutenRestriction, isVegetarian, favorites),
   };
 
   return {
@@ -156,14 +262,10 @@ export function generateDiet(userData: UserData): DietPlan {
   };
 }
 
-function generateBreakfast(calories: number, noLactose: boolean, noGluten: boolean, vegetarian: boolean): Meal {
-  const proteinOptions = vegetarian 
-    ? ['2 ovos mexidos', '3 colheres de tofu mexido', '2 ovos cozidos']
-    : ['2 ovos mexidos', '2 fatias de peito de peru', '3 colheres de ricota'];
-  
-  const carbOptions = noGluten
-    ? ['2 fatias de pão sem glúten', '1 tapioca média', '3 colheres de cuscuz']
-    : ['2 fatias de pão integral', '1 tapioca média', '3 colheres de aveia'];
+function generateBreakfast(calories: number, noLactose: boolean, noGluten: boolean, vegetarian: boolean, favorites?: string[]): Meal {
+  const proteinOptions = getPreferredProtein(favorites, vegetarian).slice(0, 3);
+  const carbOptions = getPreferredCarbs(favorites, noGluten).slice(0, 3);
+  const fruitOptions = getPreferredFruits(favorites).slice(0, 3);
   
   const drinkOptions = noLactose
     ? ['1 copo de leite de amêndoas', '1 copo de suco natural', '1 xícara de café preto']
@@ -175,34 +277,32 @@ function generateBreakfast(calories: number, noLactose: boolean, noGluten: boole
     foods: [
       { item: proteinOptions[0], portion: 'porção', substitutes: proteinOptions.slice(1) },
       { item: carbOptions[0], portion: 'porção', substitutes: carbOptions.slice(1) },
-      { item: '1 fruta média (banana, maçã ou mamão)', portion: '1 unidade', substitutes: ['1 fatia de melão', '10 morangos'] },
+      { item: fruitOptions[0], portion: '1 unidade', substitutes: fruitOptions.slice(1) },
       { item: drinkOptions[0], portion: '200ml', substitutes: drinkOptions.slice(1) },
     ],
   };
 }
 
-function generateMorningSnack(calories: number, noLactose: boolean, noSweets: boolean): Meal {
+function generateMorningSnack(calories: number, noLactose: boolean, noSweets: boolean, favorites?: string[]): Meal {
+  const fruitOptions = getPreferredFruits(favorites).slice(0, 3);
+  
   const snackOptions = noLactose
-    ? ['1 punhado de castanhas (30g)', '1 maçã pequena', '2 cookies de aveia sem lactose']
-    : ['1 iogurte natural', '1 fatia de queijo branco', '1 banana com granola'];
+    ? ['1 punhado de castanhas (30g)', fruitOptions[0], '2 cookies de aveia sem lactose']
+    : ['1 iogurte natural', '1 fatia de queijo branco', fruitOptions[0]];
 
   return {
     name: 'Lanche da Manhã',
     time: '10:00',
     foods: [
-      { item: noSweets ? '1 punhado de castanhas (30g)' : snackOptions[0], portion: 'porção', substitutes: ['1 fruta pequena', '2 torradas integrais'] },
+      { item: noSweets ? '1 punhado de castanhas (30g)' : snackOptions[0], portion: 'porção', substitutes: [fruitOptions[0], '2 torradas integrais'] },
     ],
   };
 }
 
-function generateLunch(calories: number, noGluten: boolean, vegetarian: boolean): Meal {
-  const proteinOptions = vegetarian
-    ? ['150g de grão-de-bico refogado', '150g de lentilha', '2 ovos + 100g de tofu']
-    : ['150g de frango grelhado', '150g de peixe assado', '120g de carne magra'];
-
-  const carbOptions = noGluten
-    ? ['4 colheres de arroz integral', '3 colheres de quinoa', '2 batatas médias cozidas']
-    : ['4 colheres de arroz integral', '3 colheres de macarrão integral', '2 batatas médias'];
+function generateLunch(calories: number, noGluten: boolean, vegetarian: boolean, favorites?: string[]): Meal {
+  const proteinOptions = getPreferredProtein(favorites, vegetarian).slice(0, 3);
+  const carbOptions = getPreferredCarbs(favorites, noGluten).slice(0, 3);
+  const veggieOptions = getPreferredVegetables(favorites).slice(0, 3);
 
   return {
     name: 'Almoço',
@@ -212,30 +312,31 @@ function generateLunch(calories: number, noGluten: boolean, vegetarian: boolean)
       { item: carbOptions[0], portion: '4 colheres', substitutes: carbOptions.slice(1) },
       { item: '3 colheres de feijão', portion: '3 colheres', substitutes: ['Lentilha', 'Grão-de-bico'] },
       { item: proteinOptions[0], portion: '150g', substitutes: proteinOptions.slice(1) },
-      { item: 'Legumes refogados (brócolis, cenoura)', portion: '1 xícara', substitutes: ['Abobrinha grelhada', 'Couve refogada'] },
+      { item: `Legumes refogados (${veggieOptions[0]}, ${veggieOptions[1] || 'cenoura'})`, portion: '1 xícara', substitutes: veggieOptions.slice(2) },
     ],
   };
 }
 
-function generateAfternoonSnack(calories: number, noLactose: boolean, noSweets: boolean): Meal {
+function generateAfternoonSnack(calories: number, noLactose: boolean, noSweets: boolean, favorites?: string[]): Meal {
+  const fruitOptions = getPreferredFruits(favorites).slice(0, 3);
+  
   const options = noLactose
-    ? ['1 banana com pasta de amendoim', '1 fatia de bolo de banana sem lactose', 'Mix de frutas secas']
-    : ['1 iogurte grego natural', '1 fatia de queijo com 1 fruta', 'Vitamina de frutas'];
+    ? [fruitOptions[0] + ' com pasta de amendoim', '1 fatia de bolo de banana sem lactose', 'Mix de frutas secas']
+    : ['1 iogurte grego natural', '1 fatia de queijo com ' + fruitOptions[0], 'Vitamina de frutas'];
 
   return {
     name: 'Lanche da Tarde',
     time: '16:00',
     foods: [
-      { item: noSweets ? '1 banana com 1 colher de pasta de amendoim' : options[0], portion: 'porção', substitutes: ['1 barrinha de cereal', '1 punhado de amêndoas'] },
+      { item: noSweets ? fruitOptions[0] + ' com 1 colher de pasta de amendoim' : options[0], portion: 'porção', substitutes: ['1 barrinha de cereal', '1 punhado de amêndoas'] },
       { item: '1 xícara de chá verde', portion: '200ml', substitutes: ['Água de coco', 'Suco natural'] },
     ],
   };
 }
 
-function generateDinner(calories: number, noGluten: boolean, vegetarian: boolean): Meal {
-  const proteinOptions = vegetarian
-    ? ['Omelete de 2 ovos com legumes', '150g de tofu grelhado', 'Hambúrguer de lentilha']
-    : ['150g de peixe grelhado', '120g de frango desfiado', '2 ovos mexidos'];
+function generateDinner(calories: number, noGluten: boolean, vegetarian: boolean, favorites?: string[]): Meal {
+  const proteinOptions = getPreferredProtein(favorites, vegetarian).slice(0, 3);
+  const veggieOptions = getPreferredVegetables(favorites).slice(0, 3);
 
   const sideOptions = noGluten
     ? ['Purê de batata doce', 'Legumes assados', 'Salada com quinoa']
@@ -245,7 +346,7 @@ function generateDinner(calories: number, noGluten: boolean, vegetarian: boolean
     name: 'Jantar',
     time: '19:30',
     foods: [
-      { item: 'Salada verde à vontade', portion: 'à vontade', substitutes: ['Sopa de legumes', 'Caldo verde'] },
+      { item: `Salada de ${veggieOptions[0]} e ${veggieOptions[1] || 'folhas verdes'}`, portion: 'à vontade', substitutes: ['Sopa de legumes', 'Caldo verde'] },
       { item: proteinOptions[0], portion: '150g', substitutes: proteinOptions.slice(1) },
       { item: sideOptions[0], portion: 'porção', substitutes: sideOptions.slice(1) },
     ],
