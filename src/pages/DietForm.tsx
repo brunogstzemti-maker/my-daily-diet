@@ -398,13 +398,14 @@ export default function DietForm() {
                     <button
                       key={food.id}
                       onClick={() => toggleFavoriteFood(food.id)}
-                      className={`px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
                         formData.favoriteFoods.includes(food.id)
                           ? 'border-primary bg-primary/10 text-primary font-medium'
                           : 'border-border hover:border-primary/50 text-foreground'
                       }`}
                     >
-                      {food.label}
+                      <span className="text-lg">{food.emoji}</span>
+                      <span>{food.label}</span>
                     </button>
                   ))}
                 </div>
@@ -421,13 +422,14 @@ export default function DietForm() {
                     <button
                       key={food.id}
                       onClick={() => toggleFavoriteFood(food.id)}
-                      className={`px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
                         formData.favoriteFoods.includes(food.id)
                           ? 'border-primary bg-primary/10 text-primary font-medium'
                           : 'border-border hover:border-primary/50 text-foreground'
                       }`}
                     >
-                      {food.label}
+                      <span className="text-lg">{food.emoji}</span>
+                      <span>{food.label}</span>
                     </button>
                   ))}
                 </div>
@@ -444,13 +446,14 @@ export default function DietForm() {
                     <button
                       key={food.id}
                       onClick={() => toggleFavoriteFood(food.id)}
-                      className={`px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
                         formData.favoriteFoods.includes(food.id)
                           ? 'border-primary bg-primary/10 text-primary font-medium'
                           : 'border-border hover:border-primary/50 text-foreground'
                       }`}
                     >
-                      {food.label}
+                      <span className="text-lg">{food.emoji}</span>
+                      <span>{food.label}</span>
                     </button>
                   ))}
                 </div>
@@ -467,13 +470,14 @@ export default function DietForm() {
                     <button
                       key={food.id}
                       onClick={() => toggleFavoriteFood(food.id)}
-                      className={`px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
                         formData.favoriteFoods.includes(food.id)
                           ? 'border-primary bg-primary/10 text-primary font-medium'
                           : 'border-border hover:border-primary/50 text-foreground'
                       }`}
                     >
-                      {food.label}
+                      <span className="text-lg">{food.emoji}</span>
+                      <span>{food.label}</span>
                     </button>
                   ))}
                 </div>
