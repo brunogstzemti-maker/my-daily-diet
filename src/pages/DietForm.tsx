@@ -494,7 +494,7 @@ export default function DietForm() {
           </section>
 
           {/* Submit Button */}
-          <div className="flex justify-end pt-4">
+          <div className="flex justify-center md:justify-end pt-4">
             <Button onClick={handleSubmit} variant="hero" size="lg" disabled={loading} className="gap-2">
               {loading ? (
                 <>
