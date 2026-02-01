@@ -11,7 +11,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { signIn, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -103,7 +103,7 @@ export default function Login() {
                 defina sua senha aqui
               </Link>
             </p>
-            
+
             <div>
               <Link to="/recuperar-senha" className="text-muted-foreground hover:text-primary">
                 Esqueceu a senha?
@@ -112,6 +112,15 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      {/* ÁREA DE DIAGNÓSTICO TEMPORÁRIA */}
+      <div className="mt-8 p-4 bg-black/80 text-green-400 text-xs font-mono rounded overflow-auto max-w-md mx-auto">
+        <p className="font-bold text-white mb-2">🔍 DEBUG INFO:</p>
+        <p>Project URL: {import.meta.env.VITE_SUPABASE_URL || "Hardcoded Fallback"}</p>
+        <p>Email Length: {formData.email.length}</p>
+        <p>Password Length: {formData.password.length}</p>
+      </div>
+
     </div>
   );
 }
