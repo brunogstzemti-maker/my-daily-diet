@@ -29,7 +29,7 @@ interface AppmaxWebhookPayload {
   environment?: string;
   event?: string;
   data?: AppmaxData;
-  
+
   // Fallback for flat structure
   customer_email?: string;
   customer_name?: string;
@@ -48,7 +48,7 @@ serve(async (req: Request): Promise<Response> => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    
+
     // Create admin client with service role key
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
       auth: {
@@ -58,22 +58,22 @@ serve(async (req: Request): Promise<Response> => {
     });
 
     const payload: AppmaxWebhookPayload = await req.json();
-    
+
     // Extract from nested data structure (real Appmax format) or flat structure
     const email = payload.data?.customer?.email || payload.customer_email;
-    const name = payload.data?.customer?.fullname || 
-                 payload.data?.customer?.firstname && payload.data?.customer?.lastname 
-                   ? `${payload.data.customer.firstname} ${payload.data.customer.lastname}`.trim()
-                   : payload.customer_name || 
-                     `${payload.customer_firstname || ''} ${payload.customer_lastname || ''}`.trim();
-    
+    const name = payload.data?.customer?.fullname ||
+      payload.data?.customer?.firstname && payload.data?.customer?.lastname
+      ? `${payload.data.customer.firstname} ${payload.data.customer.lastname}`.trim()
+      : payload.customer_name ||
+      `${payload.customer_firstname || ''} ${payload.customer_lastname || ''}`.trim();
+
     const orderId = payload.data?.id?.toString() || payload.order_id;
     const orderStatus = payload.data?.status || payload.order_status;
     const event = payload.event;
 
-    console.log("Appmax Webhook received:", { 
-      email, 
-      name, 
+    console.log("Appmax Webhook received:", {
+      email,
+      name,
       orderId,
       orderStatus,
       event,
@@ -99,23 +99,23 @@ serve(async (req: Request): Promise<Response> => {
 
     const approvedStatuses = [
       "approved",
-      "aprovado", 
+      "aprovado",
       "integrated",
       "integrado",
       "paid",
       "pago"
     ];
 
-    const isApproved = approvedEvents.includes(event || "") || 
-                       approvedStatuses.includes((orderStatus || "").toLowerCase());
+    const isApproved = approvedEvents.includes(event || "") ||
+      approvedStatuses.includes((orderStatus || "").toLowerCase());
 
     if (!isApproved) {
       console.log("Order not approved yet:", { event, orderStatus });
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           message: "Evento recebido, aguardando aprovação do pedido",
           event,
-          orderStatus 
+          orderStatus
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -141,16 +141,15 @@ serve(async (req: Request): Promise<Response> => {
         console.error("Error updating profile:", updateError);
       }
     } else {
-      // Create new user in Supabase Auth (without password - user will set it on first login)
-      const tempPassword = crypto.randomUUID();
-      
+      // Generate a user-friendly password (8 characters)
+      const tempPassword = Math.random().toString(36).slice(-8).toUpperCase();
+
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: email,
         password: tempPassword,
         email_confirm: true,
         user_metadata: {
           name: name,
-          needs_password_reset: true,
           appmax_order_id: orderId,
         },
       });
@@ -179,13 +178,69 @@ serve(async (req: Request): Promise<Response> => {
       if (profileError) {
         console.error("Error creating profile:", profileError);
       }
+
+      // Send email with credentials using Resend
+      const resendApiKey = Deno.env.get("RESEND_API_KEY");
+      if (resendApiKey) {
+        try {
+          const res = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${resendApiKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              from: "Daily Diet <onboarding@resend.dev>", // Você deve trocar isso pelo seu domínio depois
+              to: [email],
+              subject: "Acesso Liberado! Sua dieta chegou 🥗",
+              html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h1 style="color: #00A86B;">Seu acesso foi liberado!</h1>
+                  <p>Olá, <strong>${name || 'Cliente'}</strong>!</p>
+                  <p>Seu pagamento foi confirmado e sua conta já está pronta.</p>
+                  
+                  <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <p style="margin: 0; color: #666;">Seu Login:</p>
+                    <p style="margin: 5px 0 15px 0; font-weight: bold; font-size: 18px;">${email}</p>
+                    
+                    <p style="margin: 0; color: #666;">Sua Senha Provisória:</p>
+                    <p style="margin: 5px 0 0 0; font-weight: bold; font-size: 24px; color: #000;">${tempPassword}</p>
+                  </div>
+
+                  <p>Clique no botão abaixo para acessar agora:</p>
+                  <a href="https://dietapersonalizadapp.netlify.app/" style="background-color: #00A86B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
+                    Acessar Plataforma
+                  </a>
+                  
+                  <p style="margin-top: 30px; font-size: 12px; color: #888;">
+                    Recomendamos que você troque esta senha após o primeiro acesso.
+                  </p>
+                </div>
+              `
+            }),
+          });
+
+          if (!res.ok) {
+            const errorData = await res.text();
+            console.error("Resend API Error:", errorData);
+          } else {
+            console.log("Welcome email sent via Resend");
+          }
+        } catch (emailError) {
+          console.error("Failed to send email:", emailError);
+        }
+      } else {
+        console.log("RESEND_API_KEY not found. Skipping email.");
+      }
+
     }
+
 
     console.log("Appmax integration successful for:", email);
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
+      JSON.stringify({
+        success: true,
         message: "Usuário criado/atualizado com sucesso",
         user_id: userId,
         order_id: orderId,
