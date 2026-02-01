@@ -9,12 +9,11 @@ import { Loader2, Salad, Mail, Lock } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { signIn, signUp, user, loading: authLoading } = useAuth();
+  const { signIn, user, loading: authLoading } = useAuth();
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
-  const [lastError, setLastError] = useState<string>("");
-  const [diagLog, setDiagLog] = useState<string>("");
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -27,26 +26,7 @@ export default function Login() {
     }
   }, [authLoading, user, navigate]);
 
-  const runDiagnostics = async () => {
-    setDiagLog("Iniciando...");
-    const tEmail = `teste_${Math.random().toString(36).slice(2)}@teste.com`;
-    const tPass = "123456";
 
-    setDiagLog(`1. Criando user ${tEmail}...`);
-    const { error: upErr } = await signUp(tEmail, tPass, "Tester");
-    if (upErr) {
-      setDiagLog(`FALHA CRIAÇÃO: ${upErr.message}`);
-      return;
-    }
-
-    setDiagLog("2. Criado. Tentando logar...");
-    const { error: inErr } = await signIn(tEmail, tPass);
-    if (inErr) {
-      setDiagLog(`FALHA LOGIN: ${inErr.message}`);
-    } else {
-      setDiagLog("SUCESSO TOTAL! FRONTEND OK.");
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,8 +35,6 @@ export default function Login() {
     try {
       const { error } = await signIn(formData.email, formData.password);
       if (error) {
-        console.error("LOGIN ERROR DETAILED:", error);
-        setLastError(error.message + (error.cause ? ` - ${error.cause}` : ""));
         toast({ variant: "destructive", title: "Erro no login", description: error.message });
       } else {
         navigate('/');
@@ -138,19 +116,7 @@ export default function Login() {
         </div>
       </div>
 
-      {/* ÁREA DE DIAGNÓSTICO TEMPORÁRIA */}
-      <div className="mt-8 p-4 bg-black/80 text-green-400 text-xs font-mono rounded overflow-auto max-w-md mx-auto">
-        <p className="font-bold text-white mb-2">🔍 DEBUG INFO:</p>
-        <p>Project URL: {import.meta.env.VITE_SUPABASE_URL || "Hardcoded Fallback"}</p>
-        <p>Email Length: {formData.email.length}</p>
-        <p>Password: {formData.password}</p>
-        <p className="text-red-400 mt-2">LAST ERROR: {lastError}</p>
 
-        <button type="button" onClick={runDiagnostics} className="mt-4 w-full bg-yellow-600 text-white font-bold py-2 rounded text-xs hover:bg-yellow-700">
-          RODAR DIAGNÓSTICO
-        </button>
-        {diagLog && <p className="mt-2 text-yellow-300 font-mono text-xs border-t border-yellow-600 pt-2">{diagLog}</p>}
-      </div>
 
     </div>
   );
