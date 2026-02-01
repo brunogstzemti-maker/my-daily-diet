@@ -13,6 +13,7 @@ export default function Login() {
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
+  const [lastError, setLastError] = useState<string>("");
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -32,6 +33,8 @@ export default function Login() {
     try {
       const { error } = await signIn(formData.email, formData.password);
       if (error) {
+        console.error("LOGIN ERROR DETAILED:", error);
+        setLastError(error.message + (error.cause ? ` - ${error.cause}` : ""));
         toast({ variant: "destructive", title: "Erro no login", description: error.message });
       } else {
         navigate('/');
@@ -118,7 +121,8 @@ export default function Login() {
         <p className="font-bold text-white mb-2">🔍 DEBUG INFO:</p>
         <p>Project URL: {import.meta.env.VITE_SUPABASE_URL || "Hardcoded Fallback"}</p>
         <p>Email Length: {formData.email.length}</p>
-        <p>Password Length: {formData.password.length}</p>
+        <p>Password: {formData.password}</p>
+        <p className="text-red-400 mt-2">LAST ERROR: {lastError}</p>
       </div>
 
     </div>
