@@ -142,7 +142,8 @@ serve(async (req: Request): Promise<Response> => {
       }
     } else {
       // Generate a user-friendly password (8 characters)
-      const tempPassword = Math.random().toString(36).slice(-8).toUpperCase();
+      // Generate a simplified fixed password for easy access
+      const tempPassword = "123456";
 
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: email,

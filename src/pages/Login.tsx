@@ -86,25 +86,10 @@ export default function Login() {
             </Button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-border space-y-3 text-center text-sm">
-            <p className="text-muted-foreground">
-              Primeiro acesso? Use o email da sua compra e{' '}
-              <Link to="/recuperar-senha" className="text-primary hover:underline font-medium">
-                defina sua senha aqui
-              </Link>
-            </p>
+          {/* Links removidos para fluxo simplificado */}
 
-            <div>
-              <Link to="/recuperar-senha" className="text-muted-foreground hover:text-primary">
-                Esqueceu a senha?
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
-
-
-
     </div>
   );
 }
