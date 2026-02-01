@@ -3,8 +3,8 @@
   publish = "dist"
 
 [build.environment]
-  VITE_SUPABASE_URL = "https://uxcjxvdhxgeibdqperbn.supabase.co"
-  VITE_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4Y2p4dmRoeGdlaWJkcXBlcmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMTk5NDgsImV4cCI6MjA4NDY5NTk0OH0.DOMqGStyqSRp1gTdBZMeKl5T8Ml7mxiknS0ldEb3fMY"
+  VITE_SUPABASE_URL = "https://nycachjvpoqnjqqwyyvu.supabase.co"
+  VITE_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55Y2FjaGp2cG9xbmpxcXd5eXZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NTIzNTgsImV4cCI6MjA4NTUyODM1OH0.TYNqxXYefX-ZpcQUm-ZjYx8pdvzGJ_k59ccWd1gVxCg"
   NODE_VERSION = "20"
 
 [[redirects]]
