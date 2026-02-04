@@ -475,57 +475,56 @@ export default function DietForm() {
                   ))}
                 </div>
               </div>
+
+              {/* Sweets */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Utensils className="w-4 h-4 text-primary" />
+                  <h3 className="font-medium text-foreground">Doces e Sobremesas (Opcional)</h3>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {availableFoods.sweets.map((food) => (
+                    <button
+                      key={food.id}
+                      onClick={() => toggleFavoriteFood(food.id)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${formData.favoriteFoods.includes(food.id)
+                        ? 'border-primary bg-primary/10 text-primary font-medium'
+                        : 'border-border hover:border-primary/50 text-foreground'
+                        }`}
+                    >
+                      <span className="text-lg">{food.emoji}</span>
+                      <span>{food.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Sweets */}
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Cookie className="w-4 h-4 text-primary" />
-                <h3 className="font-medium text-foreground">Doces e Sobremesas (Opcional)</h3>
+            {formData.favoriteFoods.length > 0 && (
+              <div className="mt-4 p-3 bg-primary/5 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-primary">{formData.favoriteFoods.length}</span> alimentos selecionados
+                </p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {availableFoods.sweets.map((food) => (
-                  <button
-                    key={food.id}
-                    onClick={() => toggleFavoriteFood(food.id)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${formData.favoriteFoods.includes(food.id)
-                      ? 'border-primary bg-primary/10 text-primary font-medium'
-                      : 'border-border hover:border-primary/50 text-foreground'
-                      }`}
-                  >
-                    <span className="text-lg">{food.emoji}</span>
-                    <span>{food.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-        </div>
+            )}
+          </section>
 
-        {formData.favoriteFoods.length > 0 && (
-          <div className="mt-4 p-3 bg-primary/5 rounded-lg">
-            <p className="text-sm text-muted-foreground">
-              <span className="font-medium text-primary">{formData.favoriteFoods.length}</span> alimentos selecionados
-            </p>
+          {/* Submit Button */}
+          <div className="flex justify-center md:justify-end pt-4">
+            <Button onClick={handleSubmit} variant="hero" size="lg" disabled={loading} className="gap-2">
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Gerando sua dieta...
+                </>
+              ) : (
+                <>
+                  Gerar minha dieta personalizada
+                </>
+              )}
+            </Button>
           </div>
-        )}
-      </section>
-
-      {/* Submit Button */}
-      <div className="flex justify-center md:justify-end pt-4">
-        <Button onClick={handleSubmit} variant="hero" size="lg" disabled={loading} className="gap-2">
-          {loading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Gerando sua dieta...
-            </>
-          ) : (
-            <>
-              Gerar minha dieta personalizada
-            </>
-          )}
-        </Button>
+        </div>
       </div>
-    </div>
-    </div >
-  );
+      );
 }
