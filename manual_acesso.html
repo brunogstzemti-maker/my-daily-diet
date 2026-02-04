@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Acesso - Daily Diet</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 10mm auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        @media print {
+            body {
+                background: none;
+                margin: 0;
+            }
+            .page {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #00A86B;
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: #00A86B;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .title {
+            font-size: 24px;
+            color: #111827;
+            margin: 0;
+        }
+
+        .welcome-box {
+            background-color: #ecfdf5;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 40px;
+            border: 1px solid #00A86B;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            color: #065f46;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .step-number {
+            background-color: #00A86B;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            margin: 0 0 8px 0;
+            color: #111827;
+            font-size: 18px;
+        }
+
+        .step-content p {
+            margin: 0;
+            color: #4b5563;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .login-preview {
+            background: #f9fafb;
+            border: 1px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .link-box {
+            background: #111827;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-family: monospace;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+        }
+
+        .highlight {
+            color: #00A86B;
+            font-weight: bold;
+        }
+
+        .btn-print {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00A86B;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,168,107,0.3);
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .btn-print:hover {
+            background: #008f5b;
+        }
+    </style>
+</head>
+<body>
+
+    <button onclick="window.print()" class="btn-print no-print">🖨️ Salvar como PDF</button>
+
+    <div class="page">
+        <div class="header">
+            <div class="logo">DailyDiet 🥗</div>
+            <h1 class="title">Guia de Acesso à Sua Dieta</h1>
+        </div>
+
+        <div class="welcome-box">
+            <p class="welcome-text">
+                <strong>Parabéns pela compra!</strong><br>
+                Sua dieta personalizada já está pronta. Siga os passos abaixo para acessar agora mesmo.
+            </p>
+        </div>
+
+        <div class="steps">
+            <!-- Passo 1 -->
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Acesse o Endereço</h3>
+                    <p>Abra o navegador no seu celular ou computador e acesse o link oficial:</p>
+                    <div class="link-box">
+                        dietapersonalizadapp.netlify.app
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passo 2 -->
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Digite seu E-mail</h3>
+                    <p>Na tela de login, você verá um campo pedindo seu <strong>Email da Compra</strong>.</p>
+                    <p>Digite o mesmo e-mail que você usou na hora do pagamento.</p>
+                    
+                    <div class="login-preview">
+                        <span style="color:#666; font-size:12px;">Email da Compra</span><br>
+                        <div style="background:white; border:1px solid #ccc; padding:8px; display:inline-block; width:200px; margin-top:5px; border-radius:4px; color:#333;">seu@email.com</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passo 3 -->
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Clique em Acessar</h3>
+                    <p>Pronto! Não precisa criar senha. Basta clicar no botão verde <strong class="highlight">Acessar Agora</strong> e você entrará direto no seu plano.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; background: #fffbeb; padding: 20px; border-left: 4px solid #f59e0b; border-radius: 4px;">
+            <h4 style="margin:0 0 5px 0; color: #b45309;">💡 Dica Importante:</h4>
+            <p style="margin:0; color: #92400e; font-size: 14px;">
+                Salve o link nos favoritos do seu navegador para não perder o acesso nos próximos dias!
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>Se tiver qualquer dúvida, entre em contato com nosso suporte.</p>
+            <p>&copy; 2026 Daily Diet. Todos os direitos reservados.</p>
+        </div>
+    </div>
+
+</body>
+</html>

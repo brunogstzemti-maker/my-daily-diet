@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, Loader2, User, Ruler, Target, Activity, AlertCircle, Heart, Utensils } from 'lucide-react';
+import { ArrowLeft, Loader2, User, Ruler, Target, Activity, AlertCircle, Heart, Utensils, Cookie } from 'lucide-react';
 import { UserData, generateDiet, availableFoods } from '@/lib/diet-calculator';
 import { useToast } from '@/hooks/use-toast';
 
@@ -35,7 +35,7 @@ export default function DietForm() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     age: '',
@@ -55,7 +55,7 @@ export default function DietForm() {
   const toggleRestriction = (restrictionId: string) => {
     setFormData(prev => {
       let newRestrictions = [...prev.restrictions];
-      
+
       if (restrictionId === 'nenhuma') {
         newRestrictions = newRestrictions.includes('nenhuma') ? [] : ['nenhuma'];
       } else {
@@ -66,7 +66,7 @@ export default function DietForm() {
           newRestrictions.push(restrictionId);
         }
       }
-      
+
       return { ...prev, restrictions: newRestrictions };
     });
   };
@@ -89,7 +89,7 @@ export default function DietForm() {
       });
       return false;
     }
-    
+
     const age = parseInt(formData.age);
     if (age < 16 || age > 100) {
       toast({
@@ -132,9 +132,9 @@ export default function DietForm() {
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
-    
+
     setLoading(true);
-    
+
     try {
       const userData: UserData = {
         name: formData.name,
@@ -147,14 +147,14 @@ export default function DietForm() {
         restrictions: formData.restrictions.filter(r => r !== 'nenhuma'),
         favoriteFoods: formData.favoriteFoods,
       };
-      
+
       const dietPlan = generateDiet(userData);
-      
-      navigate('/resultado', { 
-        state: { 
+
+      navigate('/resultado', {
+        state: {
           userData,
           dietPlan,
-        } 
+        }
       });
     } catch (error) {
       toast({
@@ -293,11 +293,10 @@ export default function DietForm() {
                 <button
                   key={goal.value}
                   onClick={() => updateField('goal', goal.value)}
-                  className={`p-4 rounded-xl border-2 text-center transition-all duration-200 ${
-                    formData.goal === goal.value
-                      ? 'border-primary bg-primary/5 shadow-md'
-                      : 'border-border hover:border-primary/50 hover:bg-muted/50'
-                  }`}
+                  className={`p-4 rounded-xl border-2 text-center transition-all duration-200 ${formData.goal === goal.value
+                    ? 'border-primary bg-primary/5 shadow-md'
+                    : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                    }`}
                 >
                   <span className={`font-medium text-sm ${formData.goal === goal.value ? 'text-primary' : 'text-foreground'}`}>
                     {goal.label}
@@ -324,11 +323,10 @@ export default function DietForm() {
                 <button
                   key={level.value}
                   onClick={() => updateField('activityLevel', level.value)}
-                  className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${
-                    formData.activityLevel === level.value
-                      ? 'border-primary bg-primary/5 shadow-md'
-                      : 'border-border hover:border-primary/50 hover:bg-muted/50'
-                  }`}
+                  className={`p-4 rounded-xl border-2 text-left transition-all duration-200 ${formData.activityLevel === level.value
+                    ? 'border-primary bg-primary/5 shadow-md'
+                    : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                    }`}
                 >
                   <span className={`font-medium block ${formData.activityLevel === level.value ? 'text-primary' : 'text-foreground'}`}>
                     {level.label}
@@ -356,11 +354,10 @@ export default function DietForm() {
                 <div
                   key={restriction.id}
                   onClick={() => toggleRestriction(restriction.id)}
-                  className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-                    formData.restrictions.includes(restriction.id)
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border hover:border-primary/50'
-                  }`}
+                  className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${formData.restrictions.includes(restriction.id)
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-primary/50'
+                    }`}
                 >
                   <Checkbox
                     checked={formData.restrictions.includes(restriction.id)}
@@ -398,11 +395,10 @@ export default function DietForm() {
                     <button
                       key={food.id}
                       onClick={() => toggleFavoriteFood(food.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
-                        formData.favoriteFoods.includes(food.id)
-                          ? 'border-primary bg-primary/10 text-primary font-medium'
-                          : 'border-border hover:border-primary/50 text-foreground'
-                      }`}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${formData.favoriteFoods.includes(food.id)
+                        ? 'border-primary bg-primary/10 text-primary font-medium'
+                        : 'border-border hover:border-primary/50 text-foreground'
+                        }`}
                     >
                       <span className="text-lg">{food.emoji}</span>
                       <span>{food.label}</span>
@@ -422,11 +418,10 @@ export default function DietForm() {
                     <button
                       key={food.id}
                       onClick={() => toggleFavoriteFood(food.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
-                        formData.favoriteFoods.includes(food.id)
-                          ? 'border-primary bg-primary/10 text-primary font-medium'
-                          : 'border-border hover:border-primary/50 text-foreground'
-                      }`}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${formData.favoriteFoods.includes(food.id)
+                        ? 'border-primary bg-primary/10 text-primary font-medium'
+                        : 'border-border hover:border-primary/50 text-foreground'
+                        }`}
                     >
                       <span className="text-lg">{food.emoji}</span>
                       <span>{food.label}</span>
@@ -446,11 +441,10 @@ export default function DietForm() {
                     <button
                       key={food.id}
                       onClick={() => toggleFavoriteFood(food.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
-                        formData.favoriteFoods.includes(food.id)
-                          ? 'border-primary bg-primary/10 text-primary font-medium'
-                          : 'border-border hover:border-primary/50 text-foreground'
-                      }`}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${formData.favoriteFoods.includes(food.id)
+                        ? 'border-primary bg-primary/10 text-primary font-medium'
+                        : 'border-border hover:border-primary/50 text-foreground'
+                        }`}
                     >
                       <span className="text-lg">{food.emoji}</span>
                       <span>{food.label}</span>
@@ -470,11 +464,10 @@ export default function DietForm() {
                     <button
                       key={food.id}
                       onClick={() => toggleFavoriteFood(food.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${
-                        formData.favoriteFoods.includes(food.id)
-                          ? 'border-primary bg-primary/10 text-primary font-medium'
-                          : 'border-border hover:border-primary/50 text-foreground'
-                      }`}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${formData.favoriteFoods.includes(food.id)
+                        ? 'border-primary bg-primary/10 text-primary font-medium'
+                        : 'border-border hover:border-primary/50 text-foreground'
+                        }`}
                     >
                       <span className="text-lg">{food.emoji}</span>
                       <span>{food.label}</span>
@@ -484,32 +477,55 @@ export default function DietForm() {
               </div>
             </div>
 
-            {formData.favoriteFoods.length > 0 && (
-              <div className="mt-4 p-3 bg-primary/5 rounded-lg">
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-medium text-primary">{formData.favoriteFoods.length}</span> alimentos selecionados
-                </p>
+            {/* Sweets */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Cookie className="w-4 h-4 text-primary" />
+                <h3 className="font-medium text-foreground">Doces e Sobremesas (Opcional)</h3>
               </div>
-            )}
-          </section>
-
-          {/* Submit Button */}
-          <div className="flex justify-center md:justify-end pt-4">
-            <Button onClick={handleSubmit} variant="hero" size="lg" disabled={loading} className="gap-2">
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Gerando sua dieta...
-                </>
-              ) : (
-                <>
-                  Gerar minha dieta personalizada
-                </>
-              )}
-            </Button>
-          </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {availableFoods.sweets.map((food) => (
+                  <button
+                    key={food.id}
+                    onClick={() => toggleFavoriteFood(food.id)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all duration-200 ${formData.favoriteFoods.includes(food.id)
+                      ? 'border-primary bg-primary/10 text-primary font-medium'
+                      : 'border-border hover:border-primary/50 text-foreground'
+                      }`}
+                  >
+                    <span className="text-lg">{food.emoji}</span>
+                    <span>{food.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
         </div>
+
+        {formData.favoriteFoods.length > 0 && (
+          <div className="mt-4 p-3 bg-primary/5 rounded-lg">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-medium text-primary">{formData.favoriteFoods.length}</span> alimentos selecionados
+            </p>
+          </div>
+        )}
+      </section>
+
+      {/* Submit Button */}
+      <div className="flex justify-center md:justify-end pt-4">
+        <Button onClick={handleSubmit} variant="hero" size="lg" disabled={loading} className="gap-2">
+          {loading ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Gerando sua dieta...
+            </>
+          ) : (
+            <>
+              Gerar minha dieta personalizada
+            </>
+          )}
+        </Button>
       </div>
     </div>
+    </div >
   );
 }
