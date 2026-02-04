@@ -526,5 +526,6 @@ export default function DietForm() {
           </div>
         </div>
       </div>
-      );
+    </div>
+  );
 }
