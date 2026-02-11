@@ -10,25 +10,25 @@ import { UserData, generateDiet, availableFoods } from '@/lib/diet-calculator';
 import { useToast } from '@/hooks/use-toast';
 
 const goals = [
-  { value: 'emagrecer-rapido', label: 'Emagrecer rápido' },
-  { value: 'secar-barriga', label: 'Secar barriga' },
+  { value: 'emagrecer-rapido', label: 'Adelgazar rápido' },
+  { value: 'secar-barriga', label: 'Quemar grasa abdominal' },
   { value: 'perder-5kg', label: 'Perder 5kg' },
-  { value: 'manter-peso', label: 'Manter peso' },
+  { value: 'manter-peso', label: 'Mantener peso' },
 ];
 
 const activityLevels = [
-  { value: 'sedentario', label: 'Sedentário', description: 'Pouco ou nenhum exercício' },
-  { value: 'leve', label: 'Leve', description: '1-3 dias de exercício por semana' },
-  { value: 'moderado', label: 'Moderado', description: '3-5 dias de exercício por semana' },
-  { value: 'intenso', label: 'Intenso', description: '6-7 dias de exercício por semana' },
+  { value: 'sedentario', label: 'Sedentario', description: 'Poco o ningún ejercicio' },
+  { value: 'leve', label: 'Ligero', description: '1-3 días de ejercicio por semana' },
+  { value: 'moderado', label: 'Moderado', description: '3-5 días de ejercicio por semana' },
+  { value: 'intenso', label: 'Intenso', description: '6-7 días de ejercicio por semana' },
 ];
 
 const restrictions = [
-  { id: 'nenhuma', label: 'Nenhuma restrição' },
-  { id: 'sem-lactose', label: 'Sem lactose' },
-  { id: 'sem-gluten', label: 'Sem glúten' },
+  { id: 'nenhuma', label: 'Ninguna restricción' },
+  { id: 'sem-lactose', label: 'Sin lactosa' },
+  { id: 'sem-gluten', label: 'Sin gluten' },
   { id: 'vegetariano', label: 'Vegetariano' },
-  { id: 'sem-doces', label: 'Não gosto de doces' },
+  { id: 'sem-doces', label: 'No me gustan los dulces' },
 ];
 
 export default function DietForm() {
@@ -84,8 +84,8 @@ export default function DietForm() {
     if (!formData.name || !formData.age || !formData.sex) {
       toast({
         variant: "destructive",
-        title: "Campos obrigatórios",
-        description: "Por favor, preencha nome, idade e sexo.",
+        title: "Campos obligatorios",
+        description: "Por favor, completa nombre, edad y sexo.",
       });
       return false;
     }
@@ -94,8 +94,8 @@ export default function DietForm() {
     if (age < 16 || age > 100) {
       toast({
         variant: "destructive",
-        title: "Idade inválida",
-        description: "A idade deve estar entre 16 e 100 anos.",
+        title: "Edad inválida",
+        description: "La edad debe estar entre 16 y 100 años.",
       });
       return false;
     }
@@ -103,8 +103,8 @@ export default function DietForm() {
     if (!formData.height || !formData.weight) {
       toast({
         variant: "destructive",
-        title: "Campos obrigatórios",
-        description: "Por favor, informe sua altura e peso.",
+        title: "Campos obligatorios",
+        description: "Por favor, informa tu altura y peso.",
       });
       return false;
     }
@@ -112,8 +112,8 @@ export default function DietForm() {
     if (!formData.goal) {
       toast({
         variant: "destructive",
-        title: "Objetivo obrigatório",
-        description: "Por favor, selecione seu objetivo.",
+        title: "Objetivo obligatorio",
+        description: "Por favor, selecciona tu objetivo.",
       });
       return false;
     }
@@ -121,8 +121,8 @@ export default function DietForm() {
     if (!formData.activityLevel) {
       toast({
         variant: "destructive",
-        title: "Nível de atividade obrigatório",
-        description: "Por favor, selecione seu nível de atividade física.",
+        title: "Nivel de actividad obligatorio",
+        description: "Por favor, selecciona tu nivel de actividad física.",
       });
       return false;
     }
@@ -159,8 +159,8 @@ export default function DietForm() {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Erro ao gerar dieta",
-        description: "Ocorreu um erro. Tente novamente.",
+        title: "Error al generar dieta",
+        description: "Ocurrió un error. Intenta nuevamente.",
       });
     } finally {
       setLoading(false);
@@ -174,13 +174,13 @@ export default function DietForm() {
         <div className="mb-8">
           <Button variant="ghost" onClick={() => navigate('/')} className="gap-2 mb-4">
             <ArrowLeft className="w-4 h-4" />
-            Voltar
+            Volver
           </Button>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-            Criar Minha Dieta
+            Crear Mi Dieta
           </h1>
           <p className="text-muted-foreground mt-2">
-            Preencha suas informações para gerar um plano alimentar personalizado
+            Completa tu información para generar un plan alimenticio personalizado
           </p>
         </div>
 
@@ -192,17 +192,17 @@ export default function DietForm() {
                 <User className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h2 className="font-display text-lg font-semibold text-foreground">Dados Pessoais</h2>
-                <p className="text-sm text-muted-foreground">Informações básicas sobre você</p>
+                <h2 className="font-display text-lg font-semibold text-foreground">Datos Personales</h2>
+                <p className="text-sm text-muted-foreground">Información básica sobre ti</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="name">Nome</Label>
+                <Label htmlFor="name">Nombre</Label>
                 <Input
                   id="name"
-                  placeholder="Seu nome"
+                  placeholder="Tu nombre"
                   value={formData.name}
                   onChange={(e) => updateField('name', e.target.value)}
                   className="mt-1.5"
@@ -210,11 +210,11 @@ export default function DietForm() {
               </div>
 
               <div>
-                <Label htmlFor="age">Idade</Label>
+                <Label htmlFor="age">Edad</Label>
                 <Input
                   id="age"
                   type="number"
-                  placeholder="Sua idade"
+                  placeholder="Tu edad"
                   value={formData.age}
                   onChange={(e) => updateField('age', e.target.value)}
                   className="mt-1.5"
@@ -225,11 +225,11 @@ export default function DietForm() {
                 <Label>Sexo</Label>
                 <Select value={formData.sex} onValueChange={(value) => updateField('sex', value)}>
                   <SelectTrigger className="mt-1.5">
-                    <SelectValue placeholder="Selecione" />
+                    <SelectValue placeholder="Selecciona" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="masculino">Masculino</SelectItem>
-                    <SelectItem value="feminino">Feminino</SelectItem>
+                    <SelectItem value="feminino">Femenino</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -243,8 +243,8 @@ export default function DietForm() {
                 <Ruler className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h2 className="font-display text-lg font-semibold text-foreground">Medidas Corporais</h2>
-                <p className="text-sm text-muted-foreground">Para calcular suas necessidades calóricas</p>
+                <h2 className="font-display text-lg font-semibold text-foreground">Medidas Corporales</h2>
+                <p className="text-sm text-muted-foreground">Para calcular tus necesidades calóricas</p>
               </div>
             </div>
 
@@ -254,7 +254,7 @@ export default function DietForm() {
                 <Input
                   id="height"
                   type="number"
-                  placeholder="Ex: 170"
+                  placeholder="Ej: 170"
                   value={formData.height}
                   onChange={(e) => updateField('height', e.target.value)}
                   className="mt-1.5"
@@ -262,12 +262,12 @@ export default function DietForm() {
               </div>
 
               <div>
-                <Label htmlFor="weight">Peso atual (kg)</Label>
+                <Label htmlFor="weight">Peso actual (kg)</Label>
                 <Input
                   id="weight"
                   type="number"
                   step="0.1"
-                  placeholder="Ex: 75.5"
+                  placeholder="Ej: 75.5"
                   value={formData.weight}
                   onChange={(e) => updateField('weight', e.target.value)}
                   className="mt-1.5"
@@ -283,8 +283,8 @@ export default function DietForm() {
                 <Target className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h2 className="font-display text-lg font-semibold text-foreground">Seu Objetivo</h2>
-                <p className="text-sm text-muted-foreground">O que você quer alcançar?</p>
+                <h2 className="font-display text-lg font-semibold text-foreground">Tu Objetivo</h2>
+                <p className="text-sm text-muted-foreground">¿Qué quieres lograr?</p>
               </div>
             </div>
 
@@ -313,8 +313,8 @@ export default function DietForm() {
                 <Activity className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h2 className="font-display text-lg font-semibold text-foreground">Nível de Atividade</h2>
-                <p className="text-sm text-muted-foreground">Quanto você se exercita?</p>
+                <h2 className="font-display text-lg font-semibold text-foreground">Nivel de Actividad</h2>
+                <p className="text-sm text-muted-foreground">¿Cuánto te ejercitas?</p>
               </div>
             </div>
 
@@ -344,8 +344,8 @@ export default function DietForm() {
                 <AlertCircle className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h2 className="font-display text-lg font-semibold text-foreground">Restrições Alimentares</h2>
-                <p className="text-sm text-muted-foreground">Selecione se houver alguma restrição</p>
+                <h2 className="font-display text-lg font-semibold text-foreground">Restricciones Alimentarias</h2>
+                <p className="text-sm text-muted-foreground">Selecciona si tienes alguna restricción</p>
               </div>
             </div>
 
@@ -379,7 +379,7 @@ export default function DietForm() {
               </div>
               <div>
                 <h2 className="font-display text-lg font-semibold text-foreground">Alimentos Favoritos</h2>
-                <p className="text-sm text-muted-foreground">Selecione os alimentos que você mais gosta (opcional)</p>
+                <p className="text-sm text-muted-foreground">Selecciona los alimentos que más te gustan (opcional)</p>
               </div>
             </div>
 
@@ -411,7 +411,7 @@ export default function DietForm() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Utensils className="w-4 h-4 text-primary" />
-                  <h3 className="font-medium text-foreground">Carboidratos</h3>
+                  <h3 className="font-medium text-foreground">Carbohidratos</h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   {availableFoods.carbs.map((food) => (
@@ -434,7 +434,7 @@ export default function DietForm() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Utensils className="w-4 h-4 text-primary" />
-                  <h3 className="font-medium text-foreground">Vegetais</h3>
+                  <h3 className="font-medium text-foreground">Vegetales</h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   {availableFoods.vegetables.map((food) => (
@@ -480,7 +480,7 @@ export default function DietForm() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Utensils className="w-4 h-4 text-primary" />
-                  <h3 className="font-medium text-foreground">Doces e Sobremesas (Opcional)</h3>
+                  <h3 className="font-medium text-foreground">Dulces y Postres (Opcional)</h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {availableFoods.sweets.map((food) => (
@@ -503,7 +503,7 @@ export default function DietForm() {
             {formData.favoriteFoods.length > 0 && (
               <div className="mt-4 p-3 bg-primary/5 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  <span className="font-medium text-primary">{formData.favoriteFoods.length}</span> alimentos selecionados
+                  <span className="font-medium text-primary">{formData.favoriteFoods.length}</span> alimentos seleccionados
                 </p>
               </div>
             )}
@@ -515,11 +515,11 @@ export default function DietForm() {
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Gerando sua dieta...
+                  Generando su dieta...
                 </>
               ) : (
                 <>
-                  Gerar minha dieta personalizada
+                  Generar mi dieta personalizada
                 </>
               )}
             </Button>

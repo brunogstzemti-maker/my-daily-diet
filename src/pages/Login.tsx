@@ -35,7 +35,7 @@ export default function Login() {
     try {
       const { error } = await signIn(formData.email, "123456");
       if (error) {
-        toast({ variant: "destructive", title: "Erro no login", description: error.message });
+        toast({ variant: "destructive", title: "Error de inicio de sesión", description: error.message });
       } else {
         navigate('/');
       }
@@ -52,23 +52,23 @@ export default function Login() {
             <Salad className="w-8 h-8 text-primary" />
           </Link>
           <h1 className="font-display text-2xl font-bold text-foreground">
-            Entrar na minha conta
+            Acceder a mi cuenta
           </h1>
           <p className="text-muted-foreground mt-2">
-            Acesse sua dieta personalizada
+            Accede a tu dieta personalizada
           </p>
         </div>
 
         <div className="card-elevated p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="email">Email da Compra</Label>
+              <Label htmlFor="email">Email de Compra</Label>
               <div className="relative mt-1.5">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="exemplo@email.com"
+                  placeholder="ejemplo@email.com"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   className="pl-10"
@@ -78,11 +78,11 @@ export default function Login() {
             </div>
 
             <div className="text-xs text-muted-foreground text-center bg-muted/50 p-2 rounded">
-              <p>Acesso simplificado: Digite apenas seu e-mail.</p>
+              <p>Acceso simplificado: Ingresa solo tu e-mail.</p>
             </div>
 
             <Button type="submit" variant="hero" className="w-full" disabled={loading}>
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Acessar Agora'}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Acceder Ahora'}
             </Button>
           </form>
 

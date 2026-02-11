@@ -41,51 +41,51 @@ export interface DietPlan {
 // Available foods for selection with emoji icons
 export const availableFoods = {
   proteins: [
-    { id: 'frango', label: 'Frango', emoji: '🍗' },
-    { id: 'peixe', label: 'Peixe', emoji: '🐟' },
-    { id: 'carne-bovina', label: 'Carne bovina', emoji: '🥩' },
-    { id: 'ovos', label: 'Ovos', emoji: '🥚' },
+    { id: 'frango', label: 'Pollo', emoji: '🍗' },
+    { id: 'peixe', label: 'Pescado', emoji: '🐟' },
+    { id: 'carne-bovina', label: 'Carne de Res', emoji: '🥩' },
+    { id: 'ovos', label: 'Huevos', emoji: '🥚' },
     { id: 'tofu', label: 'Tofu', emoji: '🧈' },
-    { id: 'lentilha', label: 'Lentilha', emoji: '🫘' },
-    { id: 'grao-de-bico', label: 'Grão-de-bico', emoji: '🫛' },
-    { id: 'peru', label: 'Peru', emoji: '🦃' },
+    { id: 'lentilha', label: 'Lentejas', emoji: '🫘' },
+    { id: 'grao-de-bico', label: 'Garbanzos', emoji: '🫛' },
+    { id: 'peru', label: 'Pavo', emoji: '🦃' },
   ],
   carbs: [
-    { id: 'arroz-integral', label: 'Arroz integral', emoji: '🍚' },
-    { id: 'batata-doce', label: 'Batata doce', emoji: '🍠' },
-    { id: 'pao-integral', label: 'Pão integral', emoji: '🍞' },
-    { id: 'aveia', label: 'Aveia', emoji: '🥣' },
+    { id: 'arroz-integral', label: 'Arroz Integral', emoji: '🍚' },
+    { id: 'batata-doce', label: 'Batata (Camote)', emoji: '🍠' },
+    { id: 'pao-integral', label: 'Pan Integral', emoji: '🍞' },
+    { id: 'aveia', label: 'Avena', emoji: '🥣' },
     { id: 'tapioca', label: 'Tapioca', emoji: '🫓' },
-    { id: 'quinoa', label: 'Quinoa', emoji: '🌾' },
-    { id: 'macarrao-integral', label: 'Macarrão integral', emoji: '🍝' },
-    { id: 'cuscuz', label: 'Cuscuz', emoji: '🥘' },
+    { id: 'quinoa', label: 'Quinua', emoji: '🌾' },
+    { id: 'macarrao-integral', label: 'Pasta Integral', emoji: '🍝' },
+    { id: 'cuscuz', label: 'Cuscús', emoji: '🥘' },
   ],
   vegetables: [
-    { id: 'brocolis', label: 'Brócolis', emoji: '🥦' },
-    { id: 'espinafre', label: 'Espinafre', emoji: '🥬' },
-    { id: 'cenoura', label: 'Cenoura', emoji: '🥕' },
-    { id: 'abobrinha', label: 'Abobrinha', emoji: '🥒' },
+    { id: 'brocolis', label: 'Brócoli', emoji: '🥦' },
+    { id: 'espinafre', label: 'Espinaca', emoji: '🥬' },
+    { id: 'cenoura', label: 'Zanahoria', emoji: '🥕' },
+    { id: 'abobrinha', label: 'Calabacín', emoji: '🥒' },
     { id: 'tomate', label: 'Tomate', emoji: '🍅' },
     { id: 'pepino', label: 'Pepino', emoji: '🥒' },
-    { id: 'couve', label: 'Couve', emoji: '🥗' },
-    { id: 'alface', label: 'Alface', emoji: '🥬' },
+    { id: 'couve', label: 'Col Rizada (Kale)', emoji: '🥗' },
+    { id: 'alface', label: 'Lechuga', emoji: '🥬' },
   ],
   fruits: [
     { id: 'banana', label: 'Banana', emoji: '🍌' },
-    { id: 'maca', label: 'Maçã', emoji: '🍎' },
-    { id: 'laranja', label: 'Laranja', emoji: '🍊' },
-    { id: 'morango', label: 'Morango', emoji: '🍓' },
-    { id: 'mamao', label: 'Mamão', emoji: '🥭' },
-    { id: 'abacate', label: 'Abacate', emoji: '🥑' },
-    { id: 'melao', label: 'Melão', emoji: '🍈' },
-    { id: 'uva', label: 'Uva', emoji: '🍇' },
+    { id: 'maca', label: 'Manzana', emoji: '🍎' },
+    { id: 'laranja', label: 'Naranja', emoji: '🍊' },
+    { id: 'morango', label: 'Fresa', emoji: '🍓' },
+    { id: 'mamao', label: 'Papaya', emoji: '🥭' },
+    { id: 'abacate', label: 'Aguacate', emoji: '🥑' },
+    { id: 'melao', label: 'Melón', emoji: '🍈' },
+    { id: 'uva', label: 'Uvas', emoji: '🍇' },
   ],
   sweets: [
     { id: 'chocolate-70', label: 'Chocolate 70%', emoji: '🍫' },
-    { id: 'doce-de-leite', label: 'Doce de leite', emoji: '🍯' },
-    { id: 'brigadeiro', label: 'Brigadeiro', emoji: '🍘' },
-    { id: 'pacoca', label: 'Paçoca', emoji: '🥜' },
-    { id: 'sorvete', label: 'Sorvete', emoji: '🍦' },
+    { id: 'doce-de-leite', label: 'Dulce de Leche', emoji: '🍯' },
+    { id: 'brigadeiro', label: 'Brigadeiro (Trufa)', emoji: '🍘' },
+    { id: 'pacoca', label: 'Paçoca (Dulce de Maní)', emoji: '🥜' },
+    { id: 'sorvete', label: 'Helado', emoji: '🍦' },
     { id: 'gelatina', label: 'Gelatina', emoji: '🍮' },
   ],
 };
@@ -141,17 +141,17 @@ function hasFavorite(favorites: string[] | undefined, foodId: string): boolean {
 function getPreferredProtein(favorites: string[] | undefined, vegetarian: boolean): string[] {
   const allProteins = vegetarian
     ? [
-      { id: 'ovos', option: '2 ovos mexidos' },
-      { id: 'tofu', option: '3 colheres de tofu mexido' },
-      { id: 'lentilha', option: '150g de lentilha' },
-      { id: 'grao-de-bico', option: '150g de grão-de-bico' },
+      { id: 'ovos', option: '2 huevos revueltos' },
+      { id: 'tofu', option: '3 cucharadas de tofu revuelto' },
+      { id: 'lentilha', option: '150g de lentejas' },
+      { id: 'grao-de-bico', option: '150g de garbanzos' },
     ]
     : [
-      { id: 'frango', option: '150g de frango grelhado' },
-      { id: 'peixe', option: '150g de peixe assado' },
+      { id: 'frango', option: '150g de pollo a la plancha' },
+      { id: 'peixe', option: '150g de pescado al horno' },
       { id: 'carne-bovina', option: '120g de carne magra' },
-      { id: 'ovos', option: '2 ovos mexidos' },
-      { id: 'peru', option: '2 fatias de peito de peru' },
+      { id: 'ovos', option: '2 huevos revueltos' },
+      { id: 'peru', option: '2 rebanadas de pechuga de pavo' },
     ];
 
   // Sort by favorites first
@@ -168,20 +168,20 @@ function getPreferredProtein(favorites: string[] | undefined, vegetarian: boolea
 function getPreferredCarbs(favorites: string[] | undefined, noGluten: boolean): string[] {
   const allCarbs = noGluten
     ? [
-      { id: 'tapioca', option: '1 tapioca média' },
-      { id: 'batata-doce', option: '2 batatas doces médias' },
-      { id: 'arroz-integral', option: '4 colheres de arroz integral' },
-      { id: 'quinoa', option: '3 colheres de quinoa' },
-      { id: 'cuscuz', option: '3 colheres de cuscuz' },
+      { id: 'tapioca', option: '1 tapioca mediana' },
+      { id: 'batata-doce', option: '2 camotes medianos' },
+      { id: 'arroz-integral', option: '4 cucharadas de arroz integral' },
+      { id: 'quinoa', option: '3 cucharadas de quinua' },
+      { id: 'cuscuz', option: '3 cucharadas de cuscús' },
     ]
     : [
-      { id: 'arroz-integral', option: '4 colheres de arroz integral' },
-      { id: 'pao-integral', option: '2 fatias de pão integral' },
-      { id: 'batata-doce', option: '2 batatas doces médias' },
-      { id: 'aveia', option: '3 colheres de aveia' },
-      { id: 'tapioca', option: '1 tapioca média' },
-      { id: 'macarrao-integral', option: '3 colheres de macarrão integral' },
-      { id: 'quinoa', option: '3 colheres de quinoa' },
+      { id: 'arroz-integral', option: '4 cucharadas de arroz integral' },
+      { id: 'pao-integral', option: '2 rebanadas de pan integral' },
+      { id: 'batata-doce', option: '2 camotes medianos' },
+      { id: 'aveia', option: '3 cucharadas de avena' },
+      { id: 'tapioca', option: '1 tapioca mediana' },
+      { id: 'macarrao-integral', option: '3 cucharadas de pasta integral' },
+      { id: 'quinoa', option: '3 cucharadas de quinua' },
     ];
 
   const sorted = allCarbs.sort((a, b) => {
@@ -196,14 +196,14 @@ function getPreferredCarbs(favorites: string[] | undefined, noGluten: boolean): 
 // Get preferred fruits based on favorites
 function getPreferredFruits(favorites: string[] | undefined): string[] {
   const allFruits = [
-    { id: 'banana', option: '1 banana média' },
-    { id: 'maca', option: '1 maçã média' },
-    { id: 'mamao', option: '1 fatia de mamão' },
-    { id: 'laranja', option: '1 laranja média' },
-    { id: 'morango', option: '10 morangos' },
-    { id: 'melao', option: '1 fatia de melão' },
-    { id: 'abacate', option: '½ abacate pequeno' },
-    { id: 'uva', option: '1 cacho pequeno de uvas' },
+    { id: 'banana', option: '1 banana mediana' },
+    { id: 'maca', option: '1 manzana mediana' },
+    { id: 'mamao', option: '1 rebanada de papaya' },
+    { id: 'laranja', option: '1 naranja mediana' },
+    { id: 'morango', option: '10 fresas' },
+    { id: 'melao', option: '1 rebanada de melón' },
+    { id: 'abacate', option: '½ aguacate pequeño' },
+    { id: 'uva', option: '1 racimo pequeño de uvas' },
   ];
 
   const sorted = allFruits.sort((a, b) => {
@@ -218,14 +218,14 @@ function getPreferredFruits(favorites: string[] | undefined): string[] {
 // Get preferred vegetables based on favorites
 function getPreferredVegetables(favorites: string[] | undefined): string[] {
   const allVeggies = [
-    { id: 'brocolis', option: 'brócolis refogado' },
-    { id: 'espinafre', option: 'espinafre refogado' },
-    { id: 'cenoura', option: 'cenoura cozida' },
-    { id: 'abobrinha', option: 'abobrinha grelhada' },
-    { id: 'couve', option: 'couve refogada' },
-    { id: 'alface', option: 'salada de alface' },
-    { id: 'tomate', option: 'tomate em salada' },
-    { id: 'pepino', option: 'pepino em salada' },
+    { id: 'brocolis', option: 'brócoli salteado' },
+    { id: 'espinafre', option: 'espinaca salteada' },
+    { id: 'cenoura', option: 'zanahoria cocida' },
+    { id: 'abobrinha', option: 'calabacín a la parrilla' },
+    { id: 'couve', option: 'kale salteado' },
+    { id: 'alface', option: 'ensalada de lechuga' },
+    { id: 'tomate', option: 'ensalada de tomate' },
+    { id: 'pepino', option: 'ensalada de pepino' },
   ];
 
   const sorted = allVeggies.sort((a, b) => {
@@ -240,12 +240,12 @@ function getPreferredVegetables(favorites: string[] | undefined): string[] {
 // Get preferred sweets based on favorites
 function getPreferredSweets(favorites: string[] | undefined): string[] {
   const allSweets = [
-    { id: 'chocolate-70', option: '2 quadradinhos de Chocolate 70%' },
-    { id: 'doce-de-leite', option: '1 colher de chá de Doce de leite' },
-    { id: 'brigadeiro', option: '1 unidade pequena de Brigadeiro' },
-    { id: 'pacoca', option: '1 unidade de Paçoca' },
-    { id: 'sorvete', option: '1 bola de Sorvete (da fruta)' },
-    { id: 'gelatina', option: '1 taça de Gelatina' },
+    { id: 'chocolate-70', option: '2 cuadros de Chocolate 70%' },
+    { id: 'doce-de-leite', option: '1 cucharadita de Dulce de Leche' },
+    { id: 'brigadeiro', option: '1 trufa/brigadeiro pequeño' },
+    { id: 'pacoca', option: '1 dulce de maní' },
+    { id: 'sorvete', option: '1 bola de Helado (de fruta)' },
+    { id: 'gelatina', option: '1 copa de Gelatina' },
   ];
 
   const sorted = allSweets.sort((a, b) => {
@@ -298,16 +298,16 @@ function generateBreakfast(calories: number, noLactose: boolean, noGluten: boole
   const fruitOptions = getPreferredFruits(favorites).slice(0, 3);
 
   const drinkOptions = noLactose
-    ? ['1 copo de leite de amêndoas', '1 copo de suco natural', '1 xícara de café preto']
-    : ['1 copo de leite desnatado', '1 copo de vitamina de frutas', '1 xícara de café com leite'];
+    ? ['1 vaso de leche de almendras', '1 vaso de jugo natural', '1 taza de café negro']
+    : ['1 vaso de leche descremada', '1 licuado de frutas', '1 taza de café con leche'];
 
   return {
-    name: 'Café da Manhã',
+    name: 'Desayuno',
     time: '07:00',
     foods: [
-      { item: proteinOptions[0], portion: 'porção', substitutes: proteinOptions.slice(1) },
-      { item: carbOptions[0], portion: 'porção', substitutes: carbOptions.slice(1) },
-      { item: fruitOptions[0], portion: '1 unidade', substitutes: fruitOptions.slice(1) },
+      { item: proteinOptions[0], portion: 'porción', substitutes: proteinOptions.slice(1) },
+      { item: carbOptions[0], portion: 'porción', substitutes: carbOptions.slice(1) },
+      { item: fruitOptions[0], portion: '1 unidad', substitutes: fruitOptions.slice(1) },
       { item: drinkOptions[0], portion: '200ml', substitutes: drinkOptions.slice(1) },
     ],
   };
@@ -317,14 +317,14 @@ function generateMorningSnack(calories: number, noLactose: boolean, noSweets: bo
   const fruitOptions = getPreferredFruits(favorites).slice(0, 3);
 
   const snackOptions = noLactose
-    ? ['1 punhado de castanhas (30g)', fruitOptions[0], '2 cookies de aveia sem lactose']
-    : ['1 iogurte natural', '1 fatia de queijo branco', fruitOptions[0]];
+    ? ['1 puñado de nueces (30g)', fruitOptions[0], '2 galletas de avena sin lactosa']
+    : ['1 yogur natural', '1 rebanada de queso blanco', fruitOptions[0]];
 
   return {
-    name: 'Lanche da Manhã',
+    name: 'Merienda Matutina',
     time: '10:00',
     foods: [
-      { item: noSweets ? '1 punhado de castanhas (30g)' : snackOptions[0], portion: 'porção', substitutes: [fruitOptions[0], '2 torradas integrais'] },
+      { item: noSweets ? '1 puñado de nueces (30g)' : snackOptions[0], portion: 'porción', substitutes: [fruitOptions[0], '2 tostadas integrales'] },
     ],
   };
 }
@@ -339,19 +339,19 @@ function generateLunch(calories: number, noGluten: boolean, vegetarian: boolean,
   const dessert = sweetOptions.length > 0 ? sweetOptions[0] : null;
 
   const foods = [
-    { item: 'Salada verde à vontade', portion: 'à vontade', substitutes: ['Mix de folhas', 'Salada de tomate e pepino'] },
-    { item: carbOptions[0], portion: '4 colheres', substitutes: carbOptions.slice(1) },
-    { item: '3 colheres de feijão', portion: '3 colheres', substitutes: ['Lentilha', 'Grão-de-bico'] },
+    { item: 'Ensalada verde al gusto', portion: 'al gusto', substitutes: ['Mezcla de hojas', 'Ensalada de tomate y pepino'] },
+    { item: carbOptions[0], portion: '4 cucharadas', substitutes: carbOptions.slice(1) },
+    { item: '3 cucharadas de frijoles', portion: '3 cucharadas', substitutes: ['Lentejas', 'Garbanzos'] },
     { item: proteinOptions[0], portion: '150g', substitutes: proteinOptions.slice(1) },
-    { item: `Legumes refogados (${veggieOptions[0]}, ${veggieOptions[1] || 'cenoura'})`, portion: '1 xícara', substitutes: veggieOptions.slice(2) },
+    { item: `Verduras salteadas (${veggieOptions[0]}, ${veggieOptions[1] || 'zanahoria'})`, portion: '1 taza', substitutes: veggieOptions.slice(2) },
   ];
 
   if (dessert) {
-    foods.push({ item: `Sobremesa: ${dessert}`, portion: '1 porção moderada', substitutes: sweetOptions.slice(1) });
+    foods.push({ item: `Postre: ${dessert}`, portion: '1 porción moderada', substitutes: sweetOptions.slice(1) });
   }
 
   return {
-    name: 'Almoço',
+    name: 'Almuerzo',
     time: '12:30',
     foods: foods,
   };
@@ -361,15 +361,15 @@ function generateAfternoonSnack(calories: number, noLactose: boolean, noSweets: 
   const fruitOptions = getPreferredFruits(favorites).slice(0, 3);
 
   const options = noLactose
-    ? [fruitOptions[0] + ' com pasta de amendoim', '1 fatia de bolo de banana sem lactose', 'Mix de frutas secas']
-    : ['1 iogurte grego natural', '1 fatia de queijo com ' + fruitOptions[0], 'Vitamina de frutas'];
+    ? [fruitOptions[0] + ' con mantequilla de maní', '1 rebanada de pastel de banana sin lactosa', 'Mezcla de frutos secos']
+    : ['1 yogur griego natural', '1 rebanada de queso con ' + fruitOptions[0], 'Licuado de frutas'];
 
   return {
-    name: 'Lanche da Tarde',
+    name: 'Merienda de la Tarde',
     time: '16:00',
     foods: [
-      { item: noSweets ? fruitOptions[0] + ' com 1 colher de pasta de amendoim' : options[0], portion: 'porção', substitutes: ['1 barrinha de cereal', '1 punhado de amêndoas'] },
-      { item: '1 xícara de chá verde', portion: '200ml', substitutes: ['Água de coco', 'Suco natural'] },
+      { item: noSweets ? fruitOptions[0] + ' con 1 cucharada de mantequilla de maní' : options[0], portion: 'porción', substitutes: ['1 barrita de cereal', '1 puñado de almendras'] },
+      { item: '1 taza de té verde', portion: '200ml', substitutes: ['Agua de coco', 'Jugo natural'] },
     ],
   };
 }
@@ -379,16 +379,16 @@ function generateDinner(calories: number, noGluten: boolean, vegetarian: boolean
   const veggieOptions = getPreferredVegetables(favorites).slice(0, 3);
 
   const sideOptions = noGluten
-    ? ['Purê de batata doce', 'Legumes assados', 'Salada com quinoa']
-    : ['2 fatias de pão integral', 'Sopa de legumes', 'Salada com croutons integrais'];
+    ? ['Puré de camote', 'Verduras al horno', 'Ensalada con quinua']
+    : ['2 rebanadas de pan integral', 'Sopa de verduras', 'Ensalada con crutones integrales'];
 
   return {
-    name: 'Jantar',
+    name: 'Cena',
     time: '19:30',
     foods: [
-      { item: `Salada de ${veggieOptions[0]} e ${veggieOptions[1] || 'folhas verdes'}`, portion: 'à vontade', substitutes: ['Sopa de legumes', 'Caldo verde'] },
+      { item: `Ensalada de ${veggieOptions[0]} y ${veggieOptions[1] || 'hojas verdes'}`, portion: 'al gusto', substitutes: ['Sopa de verduras', 'Caldo verde'] },
       { item: proteinOptions[0], portion: '150g', substitutes: proteinOptions.slice(1) },
-      { item: sideOptions[0], portion: 'porção', substitutes: sideOptions.slice(1) },
+      { item: sideOptions[0], portion: 'porción', substitutes: sideOptions.slice(1) },
     ],
   };
 }

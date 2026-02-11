@@ -1,14 +1,14 @@
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { 
-  Salad, 
-  Coffee, 
-  Sun, 
-  Moon, 
+import {
+  Salad,
+  Coffee,
+  Sun,
+  Moon,
   Apple,
-  RefreshCw, 
-  Download, 
-  Save, 
+  RefreshCw,
+  Download,
+  Save,
   AlertTriangle,
   Flame,
   Clock,
@@ -31,11 +31,11 @@ import { useState } from 'react';
 import jsPDF from 'jspdf';
 
 const mealIcons: Record<string, React.ReactNode> = {
-  'Café da Manhã': <Coffee className="w-5 h-5" />,
-  'Lanche da Manhã': <Sun className="w-5 h-5" />,
-  'Almoço': <Salad className="w-5 h-5" />,
-  'Lanche da Tarde': <Apple className="w-5 h-5" />,
-  'Jantar': <Moon className="w-5 h-5" />,
+  'Desayuno': <Coffee className="w-5 h-5" />,
+  'Merienda Matutina': <Sun className="w-5 h-5" />,
+  'Almuerzo': <Salad className="w-5 h-5" />,
+  'Merienda de la Tarde': <Apple className="w-5 h-5" />,
+  'Cena': <Moon className="w-5 h-5" />,
 };
 
 interface MealCardProps {
@@ -89,15 +89,15 @@ function MealCard({ meal }: MealCardProps) {
                   onClick={() => toggleSubs(index)}
                   className="flex items-center gap-1 text-xs text-primary hover:underline mt-1"
                 >
-                  Trocar
+                  Cambiar
                   {showSubs[index] ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                 </button>
               )}
             </div>
-            
+
             {showSubs[index] && food.substitutes && (
               <div className="mt-2 pl-3 space-y-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">Substituições:</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">Sustituciones:</p>
                 {food.substitutes.map((sub, subIndex) => (
                   <p key={subIndex} className="text-sm text-muted-foreground">• {sub}</p>
                 ))}
@@ -124,10 +124,10 @@ export default function DietResult() {
       <div className="min-h-screen flex items-center justify-center bg-background px-4">
         <div className="text-center">
           <h2 className="font-display text-xl font-semibold text-foreground mb-4">
-            Nenhuma dieta gerada
+            Ninguna dieta generada
           </h2>
           <Link to="/criar-dieta">
-            <Button>Criar minha dieta</Button>
+            <Button>Crear mi dieta</Button>
           </Link>
         </div>
       </div>
@@ -137,8 +137,8 @@ export default function DietResult() {
   const handleSave = async () => {
     if (!user) {
       toast({
-        title: "Faça login para salvar",
-        description: "Você precisa estar logado para salvar sua dieta.",
+        title: "Inicia sesión para guardar",
+        description: "Necesitas estar conectado para guardar tu dieta.",
         variant: "destructive",
       });
       navigate('/login', { state: { from: { pathname: '/resultado' }, userData, dietPlan } });
@@ -169,14 +169,14 @@ export default function DietResult() {
       if (error) throw error;
 
       toast({
-        title: "Dieta salva!",
-        description: "Sua dieta foi salva com sucesso.",
+        title: "¡Dieta guardada!",
+        description: "Tu dieta fue guardada con éxito.",
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Erro ao salvar",
-        description: "Não foi possível salvar sua dieta. Tente novamente.",
+        title: "Error al guardar",
+        description: "No fue posible guardar tu dieta. Intenta nuevamente.",
       });
     } finally {
       setSaving(false);
@@ -188,7 +188,7 @@ export default function DietResult() {
     const pageWidth = pdf.internal.pageSize.getWidth();
     const margin = 20;
     let y = 20;
-    
+
     // Helper function to add text and handle page breaks
     const addText = (text: string, fontSize: number = 12, isBold: boolean = false, color: [number, number, number] = [0, 0, 0]) => {
       if (y > 270) {
@@ -201,43 +201,43 @@ export default function DietResult() {
       pdf.text(text, margin, y);
       y += fontSize * 0.5 + 2;
     };
-    
+
     // Title
     addText('Dieta Personalizada', 22, true, [26, 122, 94]);
     addText(`Preparada para: ${userData.name}`, 14, false, [100, 100, 100]);
     y += 5;
-    
+
     // Stats
-    addText('Resumo do Plano', 16, true);
-    addText(`• Calorias diárias: ${dietPlan.targetCalories} kcal`);
-    addText(`• Número de refeições: ${dietPlan.mealsPerDay}`);
-    addText(`• Foco da dieta: ${dietPlan.dietFocus}`);
-    addText(`• Taxa Metabólica (BMR): ${dietPlan.bmr} kcal`);
-    addText(`• Gasto Diário (TDEE): ${dietPlan.tdee} kcal`);
+    addText('Resumen del Plan', 16, true);
+    addText(`• Calorías diarias: ${dietPlan.targetCalories} kcal`);
+    addText(`• Número de comidas: ${dietPlan.mealsPerDay}`);
+    addText(`• Enfoque de la dieta: ${dietPlan.dietFocus}`);
+    addText(`• Tasa Metabólica (BMR): ${dietPlan.bmr} kcal`);
+    addText(`• Gasto Diario (TDEE): ${dietPlan.tdee} kcal`);
     addText(`• Déficit calórico: ${dietPlan.tdee - dietPlan.targetCalories} kcal`);
     y += 8;
-    
+
     // Meals
-    addText('Plano Alimentar Diário', 16, true, [26, 122, 94]);
+    addText('Plan Alimenticio Diario', 16, true, [26, 122, 94]);
     y += 3;
-    
+
     Object.values(dietPlan.meals).forEach((meal) => {
       if (y > 250) {
         pdf.addPage();
         y = 20;
       }
-      
+
       addText(`${meal.name}${meal.time ? ` (${meal.time})` : ''}`, 14, true);
-      
+
       meal.foods.forEach((food) => {
         addText(`  • ${food.item} - ${food.portion}`, 11);
         if (food.substitutes && food.substitutes.length > 0) {
-          addText(`    Substituições: ${food.substitutes.join(', ')}`, 9, false, [120, 120, 120]);
+          addText(`    Sustituciones: ${food.substitutes.join(', ')}`, 9, false, [120, 120, 120]);
         }
       });
       y += 4;
     });
-    
+
     // Warning
     if (y > 250) {
       pdf.addPage();
@@ -247,15 +247,15 @@ export default function DietResult() {
     pdf.setFillColor(255, 247, 237);
     pdf.rect(margin - 5, y - 5, pageWidth - margin * 2 + 10, 25, 'F');
     addText('⚠️ Aviso Importante', 12, true, [154, 52, 18]);
-    addText('Esta dieta é educativa e não substitui o acompanhamento', 10, false, [154, 52, 18]);
-    addText('de um nutricionista profissional.', 10, false, [154, 52, 18]);
-    
+    addText('Esta dieta es educativa y no sustituye el acompañamiento', 10, false, [154, 52, 18]);
+    addText('de un nutricionista profesional.', 10, false, [154, 52, 18]);
+
     // Save
     pdf.save(`dieta-${userData.name.toLowerCase().replace(/\s+/g, '-')}.pdf`);
-    
+
     toast({
-      title: "PDF gerado!",
-      description: "Sua dieta foi baixada com sucesso.",
+      title: "¡PDF generado!",
+      description: "Tu dieta fue descargada con éxito.",
     });
   };
 
@@ -271,11 +271,11 @@ export default function DietResult() {
           {user ? (
             <div className="flex items-center gap-3">
               <Link to="/dashboard" className="text-sm text-primary hover:underline">
-                Minhas dietas
+                Mis dietas
               </Link>
               <Button variant="ghost" size="sm" onClick={signOut} className="gap-2">
                 <LogOut className="w-4 h-4" />
-                Sair
+                Salir
               </Button>
             </div>
           ) : (
@@ -294,324 +294,324 @@ export default function DietResult() {
               <Salad className="w-8 h-8 text-primary" />
             </div>
             <h1 className="font-display text-3xl font-bold text-foreground mb-2">
-              Sua Dieta Personalizada
+              Tu Dieta Personalizada
             </h1>
             <p className="text-muted-foreground">
-              Preparamos um plano especial para você, {userData.name}!
+              ¡Preparamos un plan especial para ti, {userData.name}!
             </p>
           </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
-          <div className="card-elevated p-3 sm:p-4 text-center animate-slide-up" style={{ animationDelay: '100ms' }}>
-            <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
-            <p className="text-xl sm:text-2xl font-bold text-foreground">{dietPlan.targetCalories}</p>
-            <p className="text-xs text-muted-foreground">Calorias/dia</p>
-          </div>
-          <div className="card-elevated p-3 sm:p-4 text-center animate-slide-up" style={{ animationDelay: '200ms' }}>
-            <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
-            <p className="text-xl sm:text-2xl font-bold text-foreground">{dietPlan.mealsPerDay}</p>
-            <p className="text-xs text-muted-foreground">Refeições</p>
-          </div>
-          <div className="card-elevated p-3 sm:p-4 text-center animate-slide-up col-span-2 sm:col-span-1" style={{ animationDelay: '300ms' }}>
-            <Target className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
-            <p className="text-sm sm:text-base font-bold text-foreground leading-tight">{dietPlan.dietFocus}</p>
-            <p className="text-xs text-muted-foreground mt-1">Foco</p>
-          </div>
-        </div>
-
-        {/* Technical Details */}
-        <div className="card-elevated p-4 mb-8 animate-fade-in" style={{ animationDelay: '400ms' }}>
-          <h3 className="font-display font-semibold text-foreground mb-3">📊 Parâmetros do seu plano</h3>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground">Taxa Metabólica (BMR):</span>
-              <span className="font-medium text-foreground ml-2">{dietPlan.bmr} kcal</span>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
+            <div className="card-elevated p-3 sm:p-4 text-center animate-slide-up" style={{ animationDelay: '100ms' }}>
+              <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{dietPlan.targetCalories}</p>
+              <p className="text-xs text-muted-foreground">Calorías/día</p>
             </div>
-            <div>
-              <span className="text-muted-foreground">Gasto Diário (TDEE):</span>
-              <span className="font-medium text-foreground ml-2">{dietPlan.tdee} kcal</span>
+            <div className="card-elevated p-3 sm:p-4 text-center animate-slide-up" style={{ animationDelay: '200ms' }}>
+              <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{dietPlan.mealsPerDay}</p>
+              <p className="text-xs text-muted-foreground">Comidas</p>
             </div>
-            <div>
-              <span className="text-muted-foreground">Déficit calórico:</span>
-              <span className="font-medium text-foreground ml-2">{dietPlan.tdee - dietPlan.targetCalories} kcal</span>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Objetivo:</span>
-              <span className="font-medium text-foreground ml-2 capitalize">{userData.goal.replace('-', ' ')}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Meals */}
-        <div className="space-y-4 mb-8">
-          <h2 className="font-display text-xl font-semibold text-foreground">🥗 Dieta Diária</h2>
-          
-          <div className="animate-slide-up" style={{ animationDelay: '500ms' }}>
-            <MealCard meal={dietPlan.meals.breakfast} />
-          </div>
-          <div className="animate-slide-up" style={{ animationDelay: '600ms' }}>
-            <MealCard meal={dietPlan.meals.morningSnack} />
-          </div>
-          <div className="animate-slide-up" style={{ animationDelay: '700ms' }}>
-            <MealCard meal={dietPlan.meals.lunch} />
-          </div>
-          <div className="animate-slide-up" style={{ animationDelay: '800ms' }}>
-            <MealCard meal={dietPlan.meals.afternoonSnack} />
-          </div>
-          <div className="animate-slide-up" style={{ animationDelay: '900ms' }}>
-            <MealCard meal={dietPlan.meals.dinner} />
-          </div>
-        </div>
-
-        {/* Substitution Guide */}
-        <div className="card-elevated p-6 mb-8 animate-fade-in" style={{ animationDelay: '1000ms' }}>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
-              <ArrowLeftRight className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <h2 className="font-display text-xl font-semibold text-foreground">📖 Guia de Substituições</h2>
-              <p className="text-sm text-muted-foreground">Troque alimentos sem perder resultados</p>
+            <div className="card-elevated p-3 sm:p-4 text-center animate-slide-up col-span-2 sm:col-span-1" style={{ animationDelay: '300ms' }}>
+              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-primary mx-auto mb-2" />
+              <p className="text-sm sm:text-base font-bold text-foreground leading-tight">{dietPlan.dietFocus}</p>
+              <p className="text-xs text-muted-foreground mt-1">Enfoque</p>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-secondary/50">
-              <h4 className="font-semibold text-foreground mb-2">🥩 Proteínas</h4>
-              <p className="text-sm text-muted-foreground mb-2">Todas têm valor proteico similar (por 100g):</p>
-              <div className="flex flex-wrap gap-2">
-                {['Frango grelhado', 'Peixe assado', 'Carne magra', 'Ovos (2 unid.)', 'Tofu', 'Lentilha'].map((item) => (
-                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-secondary/50">
-              <h4 className="font-semibold text-foreground mb-2">🍚 Carboidratos</h4>
-              <p className="text-sm text-muted-foreground mb-2">Mesma porção de carboidratos complexos:</p>
-              <div className="flex flex-wrap gap-2">
-                {['Arroz integral', 'Batata doce', 'Quinoa', 'Macarrão integral', 'Pão integral', 'Aveia'].map((item) => (
-                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-secondary/50">
-              <h4 className="font-semibold text-foreground mb-2">🥬 Vegetais e Folhas</h4>
-              <p className="text-sm text-muted-foreground mb-2">Baixas calorias, pode variar à vontade:</p>
-              <div className="flex flex-wrap gap-2">
-                {['Alface', 'Rúcula', 'Espinafre', 'Brócolis', 'Couve', 'Agrião', 'Acelga'].map((item) => (
-                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-secondary/50">
-              <h4 className="font-semibold text-foreground mb-2">🍎 Frutas</h4>
-              <p className="text-sm text-muted-foreground mb-2">1 porção equivale a:</p>
-              <div className="flex flex-wrap gap-2">
-                {['1 maçã', '1 banana', '1 laranja', '1 fatia de melão', '10 morangos', '1 pera', '2 kiwis'].map((item) => (
-                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-secondary/50">
-              <h4 className="font-semibold text-foreground mb-2">🥛 Laticínios e Alternativas</h4>
-              <p className="text-sm text-muted-foreground mb-2">Opções com valor nutricional similar:</p>
-              <div className="flex flex-wrap gap-2">
-                {['Leite desnatado', 'Iogurte natural', 'Leite de amêndoas', 'Queijo cottage', 'Ricota', 'Leite de coco'].map((item) => (
-                  <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Shopping List */}
-        <div className="card-elevated p-6 mb-8 animate-fade-in" style={{ animationDelay: '1100ms' }}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
-                <ShoppingCart className="w-5 h-5 text-primary" />
+          {/* Technical Details */}
+          <div className="card-elevated p-4 mb-8 animate-fade-in" style={{ animationDelay: '400ms' }}>
+            <h3 className="font-display font-semibold text-foreground mb-3">📊 Parámetros de tu plan</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-muted-foreground">Tasa Metabólica (BMR):</span>
+                <span className="font-medium text-foreground ml-2">{dietPlan.bmr} kcal</span>
               </div>
               <div>
-                <h2 className="font-display text-xl font-semibold text-foreground">🛒 Lista de Compras</h2>
-                <p className="text-sm text-muted-foreground">Tudo que você precisa para a semana</p>
+                <span className="text-muted-foreground">Gasto Diario (TDEE):</span>
+                <span className="font-medium text-foreground ml-2">{dietPlan.tdee} kcal</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Déficit calórico:</span>
+                <span className="font-medium text-foreground ml-2">{dietPlan.tdee - dietPlan.targetCalories} kcal</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Objetivo:</span>
+                <span className="font-medium text-foreground ml-2 capitalize">{userData.goal.replace('-', ' ')}</span>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-secondary/30">
-              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥩</span>
-                Proteínas
-              </h4>
-              <ul className="space-y-2">
-                {[
-                  'Peito de frango (1kg)',
-                  'Ovos (2 dúzias)',
-                  'Peixe (filé de tilápia ou similar - 500g)',
-                  userData.restrictions.includes('vegetariano') ? 'Tofu (500g)' : 'Carne magra (patinho - 500g)',
-                  'Feijão (500g)',
-                  'Lentilha (500g)',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
-                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Meals */}
+          <div className="space-y-4 mb-8">
+            <h2 className="font-display text-xl font-semibold text-foreground">🥗 Dieta Diaria</h2>
 
-            <div className="p-4 rounded-xl bg-secondary/30">
-              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🍚</span>
-                Carboidratos
-              </h4>
-              <ul className="space-y-2">
-                {[
-                  'Arroz integral (1kg)',
-                  userData.restrictions.includes('sem-gluten') ? 'Pão sem glúten (1 pacote)' : 'Pão integral (1 pacote)',
-                  'Batata doce (1kg)',
-                  userData.restrictions.includes('sem-gluten') ? 'Tapioca (500g)' : 'Aveia (500g)',
-                  'Macarrão integral (500g)',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
-                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <div className="animate-slide-up" style={{ animationDelay: '500ms' }}>
+              <MealCard meal={dietPlan.meals.breakfast} />
             </div>
-
-            <div className="p-4 rounded-xl bg-secondary/30">
-              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥬</span>
-                Vegetais e Folhas
-              </h4>
-              <ul className="space-y-2">
-                {[
-                  'Alface (2 unidades)',
-                  'Tomate (500g)',
-                  'Pepino (3 unidades)',
-                  'Brócolis (2 maços)',
-                  'Cenoura (500g)',
-                  'Abobrinha (3 unidades)',
-                  'Couve (1 maço)',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
-                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <div className="animate-slide-up" style={{ animationDelay: '600ms' }}>
+              <MealCard meal={dietPlan.meals.morningSnack} />
             </div>
-
-            <div className="p-4 rounded-xl bg-secondary/30">
-              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🍎</span>
-                Frutas
-              </h4>
-              <ul className="space-y-2">
-                {[
-                  'Bananas (1 cacho)',
-                  'Maçãs (6 unidades)',
-                  'Laranja (6 unidades)',
-                  'Mamão (1 unidade)',
-                  'Limões (6 unidades)',
-                  'Morangos (1 bandeja)',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
-                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <div className="animate-slide-up" style={{ animationDelay: '700ms' }}>
+              <MealCard meal={dietPlan.meals.lunch} />
             </div>
-
-            <div className="p-4 rounded-xl bg-secondary/30">
-              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥛</span>
-                Laticínios
-              </h4>
-              <ul className="space-y-2">
-                {(userData.restrictions.includes('sem-lactose') ? [
-                  'Leite de amêndoas (1L)',
-                  'Iogurte sem lactose (4 unidades)',
-                  'Queijo sem lactose (200g)',
-                ] : [
-                  'Leite desnatado (2L)',
-                  'Iogurte natural (4 unidades)',
-                  'Queijo branco (200g)',
-                  'Ricota (200g)',
-                ]).map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
-                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <div className="animate-slide-up" style={{ animationDelay: '800ms' }}>
+              <MealCard meal={dietPlan.meals.afternoonSnack} />
             </div>
-
-            <div className="p-4 rounded-xl bg-secondary/30">
-              <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥜</span>
-                Outros
-              </h4>
-              <ul className="space-y-2">
-                {[
-                  'Azeite extra virgem (500ml)',
-                  'Castanhas/amêndoas (200g)',
-                  'Pasta de amendoim (200g)',
-                  'Chá verde (1 caixa)',
-                  'Temperos naturais (alho, cebola)',
-                  'Sal, pimenta, ervas',
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-foreground">
-                    <Check className="w-4 h-4 text-primary flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <div className="animate-slide-up" style={{ animationDelay: '900ms' }}>
+              <MealCard meal={dietPlan.meals.dinner} />
             </div>
           </div>
-        </div>
 
-        {/* Warning */}
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/10 border border-warning/20 mb-8 animate-fade-in" style={{ animationDelay: '1200ms' }}>
-          <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-warning-foreground">
-            <strong>Aviso:</strong> Esta dieta é educativa e não substitui o acompanhamento de um nutricionista profissional. Consulte um especialista antes de iniciar qualquer programa alimentar.
-          </p>
-        </div>
+          {/* Substitution Guide */}
+          <div className="card-elevated p-6 mb-8 animate-fade-in" style={{ animationDelay: '1000ms' }}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
+                <ArrowLeftRight className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="font-display text-xl font-semibold text-foreground">📖 Guía de Sustituciones</h2>
+                <p className="text-sm text-muted-foreground">Intercambia alimentos sin perder resultados</p>
+              </div>
+            </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 animate-fade-in" style={{ animationDelay: '1100ms' }}>
-          <Button onClick={() => navigate('/criar-dieta')} variant="outline" className="flex-1 gap-2">
-            <RefreshCw className="w-4 h-4" />
-            Gerar nova dieta
-          </Button>
-          <Button onClick={handleDownloadPDF} variant="secondary" className="flex-1 gap-2">
-            <Download className="w-4 h-4" />
-            Baixar PDF
-          </Button>
-          <Button onClick={handleSave} variant="hero" disabled={saving} className="flex-1 gap-2">
-            {saving ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Salvando...
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4" />
-                Salvar dieta
-              </>
-            )}
-          </Button>
-        </div>
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl bg-secondary/50">
+                <h4 className="font-semibold text-foreground mb-2">🥩 Proteínas</h4>
+                <p className="text-sm text-muted-foreground mb-2">Todas tienen valor proteico similar (por 100g):</p>
+                <div className="flex flex-wrap gap-2">
+                  {['Pollo a la parrilla', 'Pescado al horno', 'Carne magra', 'Huevos (2 unid.)', 'Tofu', 'Lentejas'].map((item) => (
+                    <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/50">
+                <h4 className="font-semibold text-foreground mb-2">🍚 Carbohidratos</h4>
+                <p className="text-sm text-muted-foreground mb-2">Misma porción de carbohidratos complejos:</p>
+                <div className="flex flex-wrap gap-2">
+                  {['Arroz integral', 'Camote', 'Quinua', 'Pasta integral', 'Pan integral', 'Avena'].map((item) => (
+                    <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/50">
+                <h4 className="font-semibold text-foreground mb-2">🥬 Vegetales y Hojas</h4>
+                <p className="text-sm text-muted-foreground mb-2">Bajas calorías, puede variar a gusto:</p>
+                <div className="flex flex-wrap gap-2">
+                  {['Lechuga', 'Rúcula', 'Espinaca', 'Brócoli', 'Kale', 'Berro', 'Acelga'].map((item) => (
+                    <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/50">
+                <h4 className="font-semibold text-foreground mb-2">🍎 Frutas</h4>
+                <p className="text-sm text-muted-foreground mb-2">1 porción equivale a:</p>
+                <div className="flex flex-wrap gap-2">
+                  {['1 manzana', '1 banana', '1 naranja', '1 rebanada de melón', '10 fresas', '1 pera', '2 kiwis'].map((item) => (
+                    <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/50">
+                <h4 className="font-semibold text-foreground mb-2">🥛 Lácteos y Alternativas</h4>
+                <p className="text-sm text-muted-foreground mb-2">Opciones con valor nutricional similar:</p>
+                <div className="flex flex-wrap gap-2">
+                  {['Leche descremada', 'Yogur natural', 'Leche de almendras', 'Queso cottage', 'Ricota', 'Leche de coco'].map((item) => (
+                    <span key={item} className="px-3 py-1 rounded-full bg-card text-sm text-foreground border border-border">{item}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Shopping List */}
+          <div className="card-elevated p-6 mb-8 animate-fade-in" style={{ animationDelay: '1100ms' }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
+                  <ShoppingCart className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="font-display text-xl font-semibold text-foreground">🛒 Lista de Compras</h2>
+                  <p className="text-sm text-muted-foreground">Todo lo que necesitas para la semana</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-secondary/30">
+                <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥩</span>
+                  Proteínas
+                </h4>
+                <ul className="space-y-2">
+                  {[
+                    'Pechuga de pollo (1kg)',
+                    'Huevos (2 docenas)',
+                    'Pescado (filete de tilapia o similar - 500g)',
+                    userData.restrictions.includes('vegetariano') ? 'Tofu (500g)' : 'Carne magra (500g)',
+                    'Frijoles (500g)',
+                    'Lentejas (500g)',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/30">
+                <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🍚</span>
+                  Carbohidratos
+                </h4>
+                <ul className="space-y-2">
+                  {[
+                    'Arroz integral (1kg)',
+                    userData.restrictions.includes('sem-gluten') ? 'Pan sin gluten (1 paquete)' : 'Pan integral (1 paquete)',
+                    'Camote (1kg)',
+                    userData.restrictions.includes('sem-gluten') ? 'Tapioca (500g)' : 'Avena (500g)',
+                    'Pasta integral (500g)',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/30">
+                <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥬</span>
+                  Vegetales y Hojas
+                </h4>
+                <ul className="space-y-2">
+                  {[
+                    'Lechuga (2 unidades)',
+                    'Tomate (500g)',
+                    'Pepino (3 unidades)',
+                    'Brócoli (2 manojos)',
+                    'Zanahoria (500g)',
+                    'Calabacín (3 unidades)',
+                    'Kale (1 manojo)',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/30">
+                <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🍎</span>
+                  Frutas
+                </h4>
+                <ul className="space-y-2">
+                  {[
+                    'Bananas (1 racimo)',
+                    'Manzanas (6 unidades)',
+                    'Naranjas (6 unidades)',
+                    'Papaya (1 unidad)',
+                    'Limones (6 unidades)',
+                    'Fresas (1 bandeja)',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/30">
+                <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥛</span>
+                  Lácteos
+                </h4>
+                <ul className="space-y-2">
+                  {(userData.restrictions.includes('sem-lactose') ? [
+                    'Leche de almendras (1L)',
+                    'Yogur sin lactosa (4 unidades)',
+                    'Queso sin lactosa (200g)',
+                  ] : [
+                    'Leche descremada (2L)',
+                    'Yogur natural (4 unidades)',
+                    'Queso blanco (200g)',
+                    'Ricota (200g)',
+                  ]).map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl bg-secondary/30">
+                <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs">🥜</span>
+                  Otros
+                </h4>
+                <ul className="space-y-2">
+                  {[
+                    'Aceite de oliva extra virgen (500ml)',
+                    'Nueces/almendras (200g)',
+                    'Mantequilla de maní (200g)',
+                    'Té verde (1 caja)',
+                    'Condimentos naturales (ajo, cebolla)',
+                    'Sal, pimienta, hierbas',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="w-4 h-4 text-primary flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Warning */}
+          <div className="flex items-start gap-3 p-4 rounded-xl bg-warning/10 border border-warning/20 mb-8 animate-fade-in" style={{ animationDelay: '1200ms' }}>
+            <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-warning-foreground">
+              <strong>Aviso:</strong> Esta dieta es educativa y no sustituye el acompañamiento de un nutricionista profesional. Consulta a un especialista antes de iniciar cualquier programa alimenticio.
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 animate-fade-in" style={{ animationDelay: '1100ms' }}>
+            <Button onClick={() => navigate('/criar-dieta')} variant="outline" className="flex-1 gap-2">
+              <RefreshCw className="w-4 h-4" />
+              Generar nueva dieta
+            </Button>
+            <Button onClick={handleDownloadPDF} variant="secondary" className="flex-1 gap-2">
+              <Download className="w-4 h-4" />
+              Descargar PDF
+            </Button>
+            <Button onClick={handleSave} variant="hero" disabled={saving} className="flex-1 gap-2">
+              {saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Guardando...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  Guardar dieta
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
