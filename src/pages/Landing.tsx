@@ -4,10 +4,10 @@ import { Salad, ArrowRight, CheckCircle2, Sparkles, LogOut } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext';
 
 const features = [
-  'Dieta personalizada para seu corpo',
-  'Cálculo automático de calorias',
-  'Sugestões de substituições',
-  'Opção de baixar em PDF',
+  'Dieta personalizada para tu cuerpo',
+  'Cálculo automático de calorías',
+  'Sugerencias de sustituciones',
+  'Opción de descargar en PDF',
 ];
 
 export default function Landing() {
@@ -25,21 +25,21 @@ export default function Landing() {
 
           {/* Main Heading */}
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-            Receba sua dieta{' '}
+            Recibe tu dieta{' '}
             <span className="gradient-text">personalizada</span>{' '}
-            em segundos
+            en segundos
           </h1>
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            Responda algumas perguntas simples e veja exatamente o que comer para alcançar seus objetivos de emagrecimento.
+            Responde algunas preguntas simples y mira exactamente qué comer para alcanzar tus objetivos de adelgazamiento.
           </p>
 
           {/* CTA Button */}
           <Link to="/criar-dieta">
             <Button variant="hero" size="xl" className="gap-3 group">
               <Sparkles className="w-5 h-5" />
-              Criar minha dieta
+              Crear mi dieta
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
@@ -64,12 +64,12 @@ export default function Landing() {
       <footer className="py-6 px-4 border-t border-border/50 bg-card/50">
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <p>© 2024 Dieta Específica Personalizada</p>
-          <button 
-            onClick={signOut} 
+          <button
+            onClick={signOut}
             className="text-primary hover:underline font-medium inline-flex items-center gap-2"
           >
             <LogOut className="w-4 h-4" />
-            Sair
+            Salir
           </button>
         </div>
       </footer>
