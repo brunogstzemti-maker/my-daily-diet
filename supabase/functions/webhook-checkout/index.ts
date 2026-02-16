@@ -6,37 +6,45 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Appmax webhook payload structure (formato real da Appmax)
-interface AppmaxCustomer {
-  id?: number;
-  email?: string;
-  firstname?: string;
-  lastname?: string;
-  fullname?: string;
-  telephone?: string;
-  document_number?: string;
+// Hotmart Webhook Payload Interfaces
+interface HotmartBuyer {
+  email: string;
+  name: string;
+  checkout_phone?: string;
 }
 
-interface AppmaxData {
-  id?: number;
-  customer_id?: number;
-  status?: string;
-  total?: number;
-  customer?: AppmaxCustomer;
+interface HotmartPurchase {
+  offer_code?: string;
+  order_date?: number;
+  original_offer_price?: {
+    value: number;
+    currency_value: string;
+  };
+  payment_type?: string;
+  price?: {
+    value: number;
+    currency_value: string;
+  };
+  status: string;
+  transaction: string;
 }
 
-interface AppmaxWebhookPayload {
-  environment?: string;
-  event?: string;
-  data?: AppmaxData;
+interface HotmartProduct {
+  id: number;
+  name: string;
+}
 
-  // Fallback for flat structure
-  customer_email?: string;
-  customer_name?: string;
-  customer_firstname?: string;
-  customer_lastname?: string;
-  order_id?: string;
-  order_status?: string;
+interface HotmartData {
+  buyer: HotmartBuyer;
+  product?: HotmartProduct;
+  purchase: HotmartPurchase;
+}
+
+interface HotmartWebhookPayload {
+  data: HotmartData;
+  event: string;
+  id: string;
+  version: string;
 }
 
 serve(async (req: Request): Promise<Response> => {
@@ -57,27 +65,16 @@ serve(async (req: Request): Promise<Response> => {
       },
     });
 
-    const payload: AppmaxWebhookPayload = await req.json();
+    const payload: HotmartWebhookPayload = await req.json();
+    console.log("Hotmart Webhook received:", JSON.stringify(payload));
 
-    // Extract from nested data structure (real Appmax format) or flat structure
-    const email = payload.data?.customer?.email || payload.customer_email;
-    const name = payload.data?.customer?.fullname ||
-      payload.data?.customer?.firstname && payload.data?.customer?.lastname
-      ? `${payload.data.customer.firstname} ${payload.data.customer.lastname}`.trim()
-      : payload.customer_name ||
-      `${payload.customer_firstname || ''} ${payload.customer_lastname || ''}`.trim();
-
-    const orderId = payload.data?.id?.toString() || payload.order_id;
-    const orderStatus = payload.data?.status || payload.order_status;
+    // Extract data from Hotmart payload
+    // Hotmart 2.0 structure usually puts data inside 'data' property
+    const email = payload.data?.buyer?.email;
+    const name = payload.data?.buyer?.name;
+    const transactionId = payload.data?.purchase?.transaction;
+    const status = payload.data?.purchase?.status;
     const event = payload.event;
-
-    console.log("Appmax Webhook received:", {
-      email,
-      name,
-      orderId,
-      orderStatus,
-      event,
-    });
 
     // Validate required fields
     if (!email) {
@@ -88,61 +85,66 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    // List of approved status/events from Appmax
+    // List of approved status/events from Hotmart
+    // Events: PURCHASE_APPROVED, PURCHASE_COMPLETE
+    // Status: APPROVED, COMPLETED
     const approvedEvents = [
-      "OrderApproved",      // Pedido aprovado
-      "OrderIntegrated",    // Pedido integrado (última etapa)
-      "OrderPaid",          // Pedido pago
-      "PixPaid",            // Pix pago
-      "UpsellPaid",         // Upsell pago
+      "PURCHASE_APPROVED",
+      "PURCHASE_COMPLETE",
+      "SWITCH_PLAN_AUDIT", // Sometimes used for upgrades
     ];
 
     const approvedStatuses = [
-      "approved",
-      "aprovado",
-      "integrated",
-      "integrado",
-      "paid",
-      "pago"
+      "APPROVED",
+      "COMPLETED",
+      "BILLED", // Faturado
     ];
 
-    const isApproved = approvedEvents.includes(event || "") ||
-      approvedStatuses.includes((orderStatus || "").toLowerCase());
+    const isApproved =
+      (event && approvedEvents.includes(event)) ||
+      (status && approvedStatuses.includes(status.toUpperCase()));
 
     if (!isApproved) {
-      console.log("Order not approved yet:", { event, orderStatus });
+      console.log("Purchase not approved yet:", { event, status });
       return new Response(
         JSON.stringify({
-          message: "Evento recebido, aguardando aprovação do pedido",
+          message: "Evento recebido, aguardando aprovação da compra",
           event,
-          orderStatus
+          status
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     // Check if user already exists
-    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find(u => u.email === email);
+    const { data: { users }, error: listUsersError } = await supabaseAdmin.auth.admin.listUsers();
 
+    if (listUsersError) {
+      throw new Error(`Error listing users: ${listUsersError.message}`);
+    }
+
+    const existingUser = users.find(u => u.email === email);
     let userId: string;
 
     if (existingUser) {
-      // User already exists, update profile status to active
+      // User already exists, ensure profile is active
       userId = existingUser.id;
       console.log("User already exists:", userId);
 
       const { error: updateError } = await supabaseAdmin
         .from("profiles")
-        .update({ status: "ativo", name: name || existingUser.user_metadata?.name })
+        .update({
+          status: "ativo",
+          name: name || existingUser.user_metadata?.name
+        })
         .eq("user_id", userId);
 
       if (updateError) {
         console.error("Error updating profile:", updateError);
       }
     } else {
-      // Generate a user-friendly password (8 characters)
-      // Generate a simplified fixed password for easy access
+      // Create new user
+      // Default password for easy access: 123456
       const tempPassword = "123456";
 
       const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
@@ -151,7 +153,7 @@ serve(async (req: Request): Promise<Response> => {
         email_confirm: true,
         user_metadata: {
           name: name,
-          appmax_order_id: orderId,
+          hotmart_transaction: transactionId,
         },
       });
 
@@ -191,14 +193,14 @@ serve(async (req: Request): Promise<Response> => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              from: "Daily Diet <onboarding@resend.dev>", // Você deve trocar isso pelo seu domínio depois
+              from: "Daily Diet <onboarding@resend.dev>",
               to: [email],
               subject: "Acesso Liberado! Sua dieta chegou 🥗",
               html: `
                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
                   <h1 style="color: #00A86B;">Seu acesso foi liberado!</h1>
                   <p>Olá, <strong>${name || 'Cliente'}</strong>!</p>
-                  <p>Seu pagamento foi confirmado e sua conta já está pronta.</p>
+                  <p>Sua compra na Hotmart foi confirmada e sua conta já está pronta.</p>
                   
                   <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
                     <p style="margin: 0; color: #666;">Seu Login:</p>
@@ -213,8 +215,8 @@ serve(async (req: Request): Promise<Response> => {
                     Acessar Plataforma
                   </a>
                   
-                  <p style="margin-top: 30px; font-size: 12px; color: #888;">
-                    Recomendamos que você troque esta senha após o primeiro acesso.
+                  <p style="font-size: 12px; color: #999; margin-top: 20px;">
+                    Transação Hotmart: ${transactionId || 'N/A'}
                   </p>
                 </div>
               `
@@ -233,18 +235,16 @@ serve(async (req: Request): Promise<Response> => {
       } else {
         console.log("RESEND_API_KEY not found. Skipping email.");
       }
-
     }
 
-
-    console.log("Appmax integration successful for:", email);
+    console.log("Hotmart integration successful for:", email);
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: "Usuário criado/atualizado com sucesso",
+        message: "Usuário processado com sucesso (Hotmart)",
         user_id: userId,
-        order_id: orderId,
+        transaction_id: transactionId,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
