@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Usuario - Mi Dieta Diaria</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #16a34a;
+            /* Primary Green */
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #15803d;
+            border-bottom: 2px solid #bbf7d0;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h3 {
+            color: #166534;
+            margin-top: 20px;
+        }
+
+        p,
+        li {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            background-color: #dcfce7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #14532d;
+        }
+
+        .step {
+            background-color: #f0fdf4;
+            border-left: 5px solid #22c55e;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .btn-download {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 30px;
+            padding: 15px 30px;
+            background-color: #16a34a;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+
+        .btn-download:hover {
+            background-color: #15803d;
+        }
+
+        @media print {
+            .btn-download {
+                display: none;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="downloadPDF()" class="btn-download">📥 Descargar Guía en PDF</button>
+
+    <div class="container" id="content">
+        <h1>Mi Dieta Diaria</h1>
+        <p style="text-align: center; color: #666; font-size: 1.2em;">Guía Oficial de Uso</p>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+
+        <p>¡Bienvenido a <strong>Mi Dieta Diaria</strong>! Esta aplicación fue diseñada para crear un plan nutricional
+            100% personalizado para ti en cuestión de segundos. Sigue estos pasos para comenzar tu transformación.</p>
+
+        <h2>1. Acceso a la Plataforma</h2>
+        <div class="step">
+            <p><span class="icon">🔐</span><strong>Inicio de Sesión Simplificado</strong></p>
+            <p>No necesitas recordar contraseñas complicadas. Para entrar:</p>
+            <ol>
+                <li>Visita la página de inicio.</li>
+                <li>Haz clic en <strong>"Entrar"</strong>.</li>
+                <li>Introduce únicamente tu <strong>Email de Compra</strong>.</li>
+                <li>¡Listo! Tendrás acceso inmediato.</li>
+            </ol>
+        </div>
+
+        <h2>2. Creando tu Dieta</h2>
+        <p>Una vez dentro, verás el botón <span class="highlight">Crear mi dieta</span>. El sistema te hará algunas
+            preguntas clave para adaptar el menú a tu metabolismo:</p>
+
+        <h3>📋 Datos Personales</h3>
+        <ul>
+            <li><strong>Edad, Peso y Altura:</strong> Necesarios para calcular tu Tasa Metabólica Basal (cuántas
+                calorías quemas en reposo).</li>
+            <li><strong>Nivel de Actividad:</strong> Sé honesto aquí (Sedentario, Ligero, Moderado, etc.) para ajustar
+                tu gasto calórico diario.</li>
+        </ul>
+
+        <h3>🎯 Tu Objetivo</h3>
+        <ul>
+            <li><strong>Perder peso rápido:</strong> Déficit calórico más agresivo.</li>
+            <li><strong>Secar barriga:</strong> Enfoque en alimentos antiinflamatorios y déficit moderado.</li>
+            <li><strong>Ganar masa:</strong> Superávit calórico y alta proteína.</li>
+        </ul>
+
+        <h3>🍎 Preferencias y Restricciones</h3>
+        <p>¿Eres vegetariano? ¿Intolerante a la lactosa? ¿No te gusta el pescado? Marca estas opciones y el algoritmo
+            excluirá esos alimentos de tu plan. ¡También puedes elegir tus favoritos para incluirlos!</p>
+
+        <h2>3. Tu Plan Personalizado</h2>
+        <div class="step">
+            <p><span class="icon">🥗</span><strong>El Resultado</strong></p>
+            <p>Al finalizar, recibirás un plan completo con:</p>
+            <ul>
+                <li><strong>Calorías Diarias y Macros:</strong> Exactamente lo que tu cuerpo necesita.</li>
+                <li><strong>5 a 6 Comidas:</strong> Desayuno, Almuerzo, Cena y Meriendas.</li>
+                <li><strong>Botón "Cambiar":</strong> Si no te gusta un alimento sugerido en una comida, haz clic en
+                    "Cambiar" para ver opciones equivalentes.</li>
+            </ul>
+        </div>
+
+        <h2>4. Herramientas Extra</h2>
+
+        <h3>🛒 Lista de Compras</h3>
+        <p>Al final de tu dieta, generamos automáticamente una lista de supermercado con todo lo que necesitas para la
+            semana. ¡Llévala contigo en el celular!</p>
+
+        <h3>📖 Guía de Sustituciones</h3>
+        <p>Aprende cómo intercambiar alimentos (ej: Pollo por Pescado, Arroz por Batata) sin alterar el resultado de tu
+            dieta.</p>
+
+        <h2>5. Guardar y Exportar</h2>
+        <p>No olvides hacer clic en:</p>
+        <ul>
+            <li><strong>Guardar Dieta:</strong> Para que quede registrada en tu perfil.</li>
+            <li><strong>Descargar PDF:</strong> Para tener tu archivo físico o digital siempre a mano.</li>
+        </ul>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 40px 0;">
+        <p style="text-align: center; font-size: 0.9em; color: #888;">© 2024 Mi Dieta Diaria - Todos los derechos
+            reservados.</p>
+    </div>
+
+    <script>
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const content = document.getElementById('content');
+
+            html2canvas(content, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = pdfWidth;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pdfHeight;
+                }
+
+                pdf.save('Guia_Usuario_Mi_Dieta.pdf');
+            });
+        }
+    </script>
+</body>
+
+</html>
